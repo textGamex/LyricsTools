@@ -1,0 +1,150 @@
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Net;
+using System.Web;
+using System.Security.Cryptography;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
+namespace Lyrics.Baidu
+{ 
+    public partial class TranslateApi
+    {
+        private readonly string appId;
+        private readonly string secretKey;
+        private static readonly Random random = new Random();
+
+        public TranslateApi(string newAppId, string newSecretKey)
+        {
+            appId = newAppId ?? throw new ArgumentNullException(nameof(newAppId));
+            secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
+        }
+
+        public bool VerifyAccount(out string errorCode, out string errorMessage)
+        {
+            string message = GetTransResult("1", "en");
+            JObject json = JObject.Parse(message);
+            if (json.TryGetValue("error_code", out JToken getErrorCode))
+            {
+                errorCode = getErrorCode.ToString();
+                errorMessage = json.GetValue("error_msg").ToString();
+                return false;
+            }
+            else
+            {
+                errorCode = string.Empty;
+                errorMessage = string.Empty;
+                return true;
+            }
+        }
+
+        public string GetTransResult(string query, string from, string to)
+        {
+            string randomNumber = random.Next(100000).ToString();
+            string sign = GetSign(query, randomNumber);
+            string url = GetUrl(query, from.ToLower(), to.ToLower(), randomNumber, sign);
+            return TranslateText(url);
+        }
+
+        public string GetTransResult(string query, string to)
+        {
+            return GetTransResult(query, "auto", to);
+        }
+
+        /// <summary>
+        /// 得到翻译后的集合
+        /// </summary>
+        /// <param name="rawDatas">原始数据</param>
+        /// <param name="targetLanguage">目标语言</param>
+        /// <returns>一个翻译完成的数组</returns>
+        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        {
+            foreach (string rawData in rawDatas)
+            {
+                Console.WriteLine(rawData);
+            }
+            ///去除时间标签的歌词集合
+            List<string> processedData = new List<string>();
+
+            foreach (string query in rawDatas)
+            {
+                processedData.Add(LyricsTools.GetLineLyric(query));
+            }
+            string one = LyricsTools.ProcessingLyrics(processedData.ToArray());
+            string rawJson = GetTransResult(one, targetLanguage.ToLower());
+            Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
+            List<string> rawDataArray = new List<string>(rawDatas);
+
+            foreach (string rawLyric in map.Keys)
+            {
+                for (int index = 0, max = rawDataArray.Count; index < max; ++index)
+                {
+                    if (rawDataArray[index].Contains(rawLyric))
+                    {
+                        rawDataArray[index] = LyricsTools.ReplaceLyric(rawDataArray[index], map[rawLyric]);
+                    }
+                }
+            }
+            return rawDataArray.ToArray();
+        }
+
+        private string GetSign(string query, string randomNumber)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            _ = sb.Append(appId).Append(query).Append(randomNumber).Append(secretKey);
+            return EncryptString(sb.ToString());
+        }
+
+        private string GetUrl(string query, string from, string to, string randomNumber, string sign)
+        {
+            StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate?");
+            url.Append("q=").Append(HttpUtility.UrlEncode(query));
+            url.Append("&from=").Append(from);
+            url.Append("&to=").Append(to);
+            url.Append("&appid=").Append(appId);
+            url.Append("&salt=").Append(randomNumber);
+            url.Append("&sign=").Append(sign);
+
+            return url.ToString();
+        }
+
+        private string TranslateText(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.ContentType = "text/html;charset=UTF-8";
+            request.UserAgent = null;
+            request.Timeout = 6000;
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream myResponseStream = response.GetResponseStream();
+            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
+            string result =  myStreamReader.ReadToEnd();
+
+            myStreamReader.Close();
+            myResponseStream.Close();
+
+            return result;
+        }
+
+        // 计算MD5值
+        private static string EncryptString(string str)
+        {
+            MD5 md5 = MD5.Create();
+            // 将字符串转换成字节数组
+            byte[] byteOld = Encoding.UTF8.GetBytes(str);
+            // 调用加密方法
+            byte[] byteNew = md5.ComputeHash(byteOld);
+            // 将加密结果转换为字符串
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in byteNew)
+            {
+                // 将字节转换成16进制表示的字符串，
+                sb.Append(b.ToString("x2"));
+            }
+            // 返回加密的字符串
+            return sb.ToString();
+        }
+    }
+}
