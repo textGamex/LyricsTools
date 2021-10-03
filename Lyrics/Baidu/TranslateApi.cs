@@ -21,19 +21,19 @@ namespace Lyrics.Baidu
             secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
         }
 
-        public bool VerifyAccount(out string errorCode, out string errorMessage)
+        public bool VerifyAccount(out int errorCode, out string errorMessage)
         {
             string message = GetTransResult("1", "en");
             JObject json = JObject.Parse(message);
             if (json.TryGetValue("error_code", out JToken getErrorCode))
             {
-                errorCode = getErrorCode.ToString();
+                errorCode = int.Parse(getErrorCode.ToString());
                 errorMessage = json.GetValue("error_msg").ToString();
                 return false;
             }
             else
             {
-                errorCode = string.Empty;
+                errorCode = 0;
                 errorMessage = string.Empty;
                 return true;
             }

@@ -26,7 +26,7 @@ namespace LyricsTools.UI
         public Login()
         {
             InitializeComponent();
-            if (Properties.Settings.Default.isAutoFill)
+            if (Properties.Settings.Default.IsAutoFill)
             { 
                 AutoFillMessageCheckBox.IsChecked = true;
                 AppId.Text = Properties.Settings.Default.AppId;
@@ -49,9 +49,10 @@ namespace LyricsTools.UI
             }
             
             TranslateApi api = new TranslateApi(AppId.Text.Trim(), SecretKey.Text.Trim());
-            if (api.VerifyAccount(out _, out _))
+            bool isEffectiveAccount = api.VerifyAccount(out int errorCode, out string errorMessage);
+            if (isEffectiveAccount)
             {
-                if (Properties.Settings.Default.isAutoFill)
+                if (Properties.Settings.Default.IsAutoFill)
                 {
                     SaveUserAccountMessage();
                 }
@@ -61,10 +62,16 @@ namespace LyricsTools.UI
                 mainwindow.Show();
                 Close();
             }
-            else
+            else if(errorCode == TranslateApi.ErrorCode.UNAUTHORIZED_USER)
             {
-                MessageBox.Show("APP ID或秘钥错误!");
-            }
+                string message = "";
+                if (errorCode == TranslateApi.ErrorCode.UNAUTHORIZED_USER)
+                {
+                    message = "APP ID或秘钥错误! ";
+                }
+                MessageBox.Show($"{message}错误码:{errorCode} 错误信息:{errorMessage}", "错误",MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }            
 #endif
         }
 
@@ -82,16 +89,20 @@ namespace LyricsTools.UI
 
         private void AutoFillMessageCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.isAutoFill = true;
+            Properties.Settings.Default.IsAutoFill = true;
         }
 
         private void AutoFillMessageCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.isAutoFill = false;
+            Properties.Settings.Default.IsAutoFill = false;
         }
 
-        void DataWindow_Closing(object sender, CancelEventArgs e)
+        private void DataWindow_Closing(object sender, CancelEventArgs e)
         {
+            if (!Properties.Settings.Default.IsAutoFill)
+            {
+                ClearUserAccountMessage();
+            }
             Properties.Settings.Default.Save();
         }
 
@@ -99,6 +110,12 @@ namespace LyricsTools.UI
         {
             Properties.Settings.Default.AppId = AppId.Text;
             Properties.Settings.Default.SecretKey = SecretKey.Text;
+        }
+
+        private void ClearUserAccountMessage()
+        {
+            Properties.Settings.Default.AppId = "";
+            Properties.Settings.Default.SecretKey = "";
         }
     }
 }

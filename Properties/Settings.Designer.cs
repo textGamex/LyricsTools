@@ -26,12 +26,12 @@ namespace LyricsTools.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool isAutoFill {
+        public bool IsAutoFill {
             get {
-                return ((bool)(this["isAutoFill"]));
+                return ((bool)(this["IsAutoFill"]));
             }
             set {
-                this["isAutoFill"] = value;
+                this["IsAutoFill"] = value;
             }
         }
         
