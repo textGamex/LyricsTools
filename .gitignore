@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 Lyrics\MyData\MyData.cs
+/Lyrics/MyData/MyData.cs
+/Lyrics/MyData/data.txt
