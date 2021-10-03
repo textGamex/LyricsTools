@@ -109,7 +109,6 @@
     <Compile Include="Lyrics\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Baidu\TranslateApi.cs" />
     <Compile Include="Lyrics\LanguageCode.cs" />
-    <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
     <Compile Include="Lyrics\Tools\JsonTools.cs" />
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
@@ -153,7 +152,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include=".editorconfig" />
     <None Include="LyricsTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -177,7 +175,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Lyrics\MyData\data.txt" />
+    <Folder Include="Lyrics\MyData\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
