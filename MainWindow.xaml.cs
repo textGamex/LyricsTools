@@ -18,6 +18,7 @@ namespace Lyricss
         private readonly TranslateApi api;
         private LanguageCode languageCode;
         private StateCode stateCode = StateCode.NONE;
+        private string fileName = "音乐";
 
         public MainWindow(TranslateApi newApi)
         {
@@ -31,10 +32,9 @@ namespace Lyricss
             {
                 Filter = "歌词文件|*.lrc;*.txt"
             };
-            if (stateCode == StateCode.NONE)
+            if (stateCode == StateCode.NONE && dialog.ShowDialog() == true)
             {
-                if (dialog.ShowDialog() == true)
-                {
+                    fileName = GetFileName(dialog.FileName);
                     FileStream stream = new FileStream(dialog.FileName, FileMode.Open);
                     using (StreamReader file = new StreamReader(stream))
                     {
@@ -49,9 +49,8 @@ namespace Lyricss
                     {
                         textOut.Text += s + Environment.NewLine;
                     }
-                }
-                getLrcPathButton.Content = "再次点击开始翻译";
-                stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;
+                    getLrcPathButton.Content = "再次点击开始翻译";
+                    stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;                             
             }
             else if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() != 0)
             {
@@ -66,10 +65,10 @@ namespace Lyricss
                     string[] languages = languageCode.ToString().Split(',');
                     string[] rawDataAyyar = rawData.ToArray();
 
+                    //翻译歌词
                     foreach (string language in languages)
-                    {
-                        Console.WriteLine(language);
-                        FileStream fileStream = new FileStream(fileSave.SelectedPath + $@"\{language}.lrc", FileMode.Create);
+                    {                         
+                        FileStream fileStream = new FileStream(fileSave.SelectedPath + $@"\{fileName}-{language}.lrc", FileMode.Create);
                         string[] data = api.GetTransResultArray(rawDataAyyar, language.Trim());                        
                         using (StreamWriter file = new StreamWriter(fileStream))
                         {
@@ -87,12 +86,13 @@ namespace Lyricss
 
                         fileStream.Close();
                         System.Threading.Thread.Sleep(1200);
-                    }                   
+                    }
+                    _ = System.Windows.MessageBox.Show("完成");
                 }                
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("未选择语言!");
+                _ = System.Windows.MessageBox.Show("未选择语言!");
             }
             
         }
@@ -208,6 +208,16 @@ namespace Lyricss
         private void ProjectUrl_Click(object sender, RoutedEventArgs e)
         {
             _ = System.Diagnostics.Process.Start("https://github.com/textGamex/LyricsTools");
+        }
+
+        private string GetFileName(string filePath)
+        {
+            Console.WriteLine(filePath);
+            int index = filePath.LastIndexOf('\\') + 1;
+            Console.WriteLine(index.ToString());
+            string newString = filePath.Substring(index);
+            Console.WriteLine(newString);
+            return newString.Split('.')[0];
         }
     }
 }
