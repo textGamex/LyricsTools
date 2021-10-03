@@ -15,9 +15,7 @@ namespace Lyricss
     public partial class MainWindow : Window
     {
         private readonly List<string> rawData = new List<string>(64);
-//#if DEBUG
         private readonly TranslateApi api;
-//#endif
         private LanguageCode languageCode;
         private StateCode stateCode = StateCode.NONE;
 
@@ -67,6 +65,7 @@ namespace Lyricss
                     double completedNumber = 0;
                     string[] languages = languageCode.ToString().Split(',');
                     string[] rawDataAyyar = rawData.ToArray();
+
                     foreach (string language in languages)
                     {
                         Console.WriteLine(language);

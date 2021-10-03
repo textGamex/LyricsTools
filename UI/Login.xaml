@@ -5,14 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LyricsTools.UI"
         mc:Ignorable="d"
+        Closing="DataWindow_Closing"
         Title="Login" Height="450" Width="800">
     <Grid x:Name="MainGrid" KeyDown="MainGrid_KeyDown">
-        <TextBox x:Name="AppId" HorizontalAlignment="Center" Margin="0,170,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="22" TextChanged="AppId_TextChanged"/>
+        <TextBox x:Name="AppId" HorizontalAlignment="Center" Margin="0,170,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="22"/>
         <TextBox x:Name="SecretKey" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="23" Margin="0,217,0,0"/>
-        <Button x:Name="LoginButton" Content="登录" HorizontalAlignment="Center" Margin="0,255,0,0" VerticalAlignment="Top" Width="60" Height="20" Click="LoginButton_Click" IsDefault="True"/>
-        <Label Content="APP ID" HorizontalAlignment="Left" Margin="222,170,0,0" VerticalAlignment="Top"/>
-        <Label Content="秘钥" HorizontalAlignment="Left" Margin="222,215,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="LoginButton" Content="登录" HorizontalAlignment="Center" Margin="0,255,0,0" VerticalAlignment="Top" Width="70" Height="20" Click="LoginButton_Click" IsDefault="True" BorderThickness="0,0,0,0" FontSize="14">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Label Content="APPID" HorizontalAlignment="Left" Margin="229,170,0,0" VerticalAlignment="Top"/>
+        <Label Content="秘钥" HorizontalAlignment="Left" Margin="229,215,0,0" VerticalAlignment="Top"/>
         <Label Content="请使用百度提供的翻译API,个人版是免费的" HorizontalAlignment="Center" Margin="0,105,0,0" VerticalAlignment="Top" Width="240"/>
+        <CheckBox x:Name="AutoFillMessageCheckBox" Content="记住我" HorizontalAlignment="Left" Margin="280,257,0,0" VerticalAlignment="Top" Checked="AutoFillMessageCheckBox_Checked" Unchecked="AutoFillMessageCheckBox_Unchecked" Height="18" ToolTip=""/>
 
     </Grid>
 </Window>

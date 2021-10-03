@@ -109,10 +109,12 @@
     <Compile Include="Lyrics\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Baidu\TranslateApi.cs" />
     <Compile Include="Lyrics\LanguageCode.cs" />
+    <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
     <Compile Include="Lyrics\Tools\JsonTools.cs" />
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
     <Compile Include="Lyrics\Tools\TimeTagTools.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="UI\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -149,9 +151,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include=".editorconfig" />
     <None Include="LyricsTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -174,8 +177,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Lyrics\MyData\" />
+    <Resource Include="Lyrics\MyData\data.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
