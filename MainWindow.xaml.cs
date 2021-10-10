@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
-using Lyrics.Baidu;
-using Lyrics;
+using Lyrics.Translation.Baidu;
+using Lyrics.Translation;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using Lyrics;
 
 namespace Lyricss
 {
@@ -15,12 +16,12 @@ namespace Lyricss
     public partial class MainWindow : Window
     {
         private readonly List<string> rawData = new List<string>(64);
-        private readonly TranslateApi api;
-        private LanguageCode languageCode;
+        private readonly ITranslation api;
+        private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
         private string fileName = "音乐";
 
-        public MainWindow(TranslateApi newApi)
+        public MainWindow(ITranslation newApi)
         {
             api = newApi;
             InitializeComponent();
@@ -34,23 +35,23 @@ namespace Lyricss
             };
             if (stateCode == StateCode.NONE && dialog.ShowDialog() == true)
             {
-                    fileName = GetFileName(dialog.FileName);
-                    FileStream stream = new FileStream(dialog.FileName, FileMode.Open);
-                    using (StreamReader file = new StreamReader(stream))
+                fileName = GetFileName(dialog.FileName);
+                FileStream stream = new FileStream(dialog.FileName, FileMode.Open);
+                using (StreamReader file = new StreamReader(stream))
+                {
+                    while (!file.EndOfStream)
                     {
-                        while (!file.EndOfStream)
-                        {
-                            rawData.Add(file.ReadLine());
-                        }
+                        rawData.Add(file.ReadLine());
                     }
-                    stream.Close();
+                }
+                stream.Close();
 
-                    foreach (string s in rawData)
-                    {
-                        textOut.Text += s + Environment.NewLine;
-                    }
-                    getLrcPathButton.Content = "再次点击开始翻译";
-                    stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;                             
+                foreach (string s in rawData)
+                {
+                    textOut.Text += s + Environment.NewLine;
+                }
+                getLrcPathButton.Content = "再次点击开始翻译";
+                stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;
             }
             else if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() != 0)
             {
@@ -81,7 +82,9 @@ namespace Lyricss
                         ++completedNumber;
                         System.Diagnostics.Debug.Assert(totalNumber > 0);
                         double value = completedNumber / totalNumber * 100;
-                        translationProgressBar.Dispatcher.Invoke(new Action<DependencyProperty, object>(translationProgressBar.SetValue), System.Windows.Threading.DispatcherPriority.Input, System.Windows.Controls.ProgressBar.ValueProperty, value);
+                        translationProgressBar.Dispatcher.Invoke(new Action<DependencyProperty, object>
+                            (translationProgressBar.SetValue), System.Windows.Threading.DispatcherPriority.Input,
+                            System.Windows.Controls.ProgressBar.ValueProperty, value);
                         systenMessage.Content = $"{language}翻译完成";
 
                         fileStream.Close();
@@ -124,83 +127,83 @@ namespace Lyricss
 
         private void EnglishSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.EN;
+            languageCode |= LanguageFlags.EN;
         }
 
         private void EnglishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.EN;
+            languageCode ^= LanguageFlags.EN;
         }
 
         private void JapaneseSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.JP;
+            languageCode |= LanguageFlags.JP;
         }
 
         private void JapaneseSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.JP;
+            languageCode ^= LanguageFlags.JP;
         }
        
         private void ChineseSwich_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.ZH;
+            languageCode |= LanguageFlags.ZH;
         }
 
         private void ChineseSwich_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.ZH;
+            languageCode ^= LanguageFlags.ZH;
         }
 
         private void TraditionalChineseSwich_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.CHT;
+            languageCode |= LanguageFlags.CHT;
         }
 
         private void TraditionalChineseSwich_UnChecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.CHT;
+            languageCode ^= LanguageFlags.CHT;
         }               
 
         private void GermanSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.DE;
+            languageCode |= LanguageFlags.DE;
         }
 
         private void GermanSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.DE;
+            languageCode ^= LanguageFlags.DE;
         }
 
         private void RussianSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.RU;
+            languageCode |= LanguageFlags.RU;
         }
 
         private void RussianSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.RU;
+            languageCode ^= LanguageFlags.RU;
         }
 
         private void FrenchSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.FRA;
+            languageCode |= LanguageFlags.FRA;
         }
 
         private void FrenchSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.FRA;
+            languageCode ^= LanguageFlags.FRA;
         }
        
 
         private void SpanishSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageCode.SPA;
+            languageCode |= LanguageFlags.SPA;
         }
 
         private void SpanishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageCode.SPA;
+            languageCode ^= LanguageFlags.SPA;
         }
 
 #endregion

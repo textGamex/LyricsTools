@@ -7,15 +7,15 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Lyrics.Baidu
+namespace Lyrics.Translation.Baidu
 { 
-    public partial class TranslateApi
+    public partial class BaiduTranslationApi : ITranslation
     {
         private readonly string appId;
         private readonly string secretKey;
         private static readonly Random random = new Random();
 
-        public TranslateApi(string newAppId, string newSecretKey)
+        public BaiduTranslationApi(string newAppId, string newSecretKey)
         {
             appId = newAppId ?? throw new ArgumentNullException(nameof(newAppId));
             secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
@@ -52,13 +52,19 @@ namespace Lyrics.Baidu
             return GetTransResult(query, "auto", to);
         }
 
+        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        {
+            return GetTransResultArray(rawDatas, "auto", targetLanguage);
+        }
+
         /// <summary>
         /// 得到翻译后的集合
         /// </summary>
         /// <param name="rawDatas">原始数据</param>
         /// <param name="targetLanguage">目标语言</param>
+        /// <param name="from">原始数据的语言</param>
         /// <returns>一个翻译完成的数组</returns>
-        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        public string[] GetTransResultArray(string[] rawDatas, string from, string targetLanguage)
         {
             foreach (string rawData in rawDatas)
             {
@@ -72,7 +78,7 @@ namespace Lyrics.Baidu
                 processedData.Add(LyricsTools.GetLineLyric(query));
             }
             string one = LyricsTools.ProcessingLyrics(processedData.ToArray());
-            string rawJson = GetTransResult(one, targetLanguage.ToLower());
+            string rawJson = GetTransResult(one, from, targetLanguage.ToLower());
             Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
             List<string> rawDataArray = new List<string>(rawDatas);
 
@@ -87,6 +93,16 @@ namespace Lyrics.Baidu
                 }
             }
             return rawDataArray.ToArray();
+        }
+
+        public string GetStandardTranslationLanguageParameters(LanguageCode languageCode)
+        {
+            switch (languageCode)
+            {
+                case LanguageCode.Chinese: return "zh";
+                case LanguageCode.English: return "en";
+                    default: throw new ArgumentException($"{languageCode}不存在");
+            }
         }
 
         private string GetSign(string query, string randomNumber)

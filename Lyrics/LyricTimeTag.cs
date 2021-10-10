@@ -144,6 +144,8 @@ namespace Lyrics
         {
             return !(left == right);
         }
+
+
         #endregion
     }
 }

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 //using System.Collections.Generic;
 
-namespace Lyrics.Baidu
+namespace Lyrics.Translation.Baidu
 {
-    public partial class TranslateApi
+    public partial class BaiduTranslationApi
     {
         #region 解析 https://fanyi-api.baidu.com/api/trans/vip/translate 返回的json格式
         public static class JsonTools
@@ -32,6 +32,6 @@ namespace Lyrics.Baidu
             }
         }
     #endregion
-}
+    }
 
 }

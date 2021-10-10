@@ -25,10 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>false</MapFileExtensions>
+    <SupportUrl>https://gitee.com/mengxin_C/LyricsTools</SupportUrl>
     <ProductName>歌词翻译工具</ProductName>
     <PublisherName>留恋千年</PublisherName>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -78,7 +79,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>LyricsTools_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -106,14 +108,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Lyrics\Baidu\BaiduApiErrorCode.cs" />
-    <Compile Include="Lyrics\Baidu\TranslateApi.cs" />
-    <Compile Include="Lyrics\LanguageCode.cs" />
+    <Compile Include="Lyrics\Lyrics.cs" />
+    <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
+    <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
+    <Compile Include="Lyrics\Translation\LanguageFlags.cs" />
     <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
     <Compile Include="Lyrics\Tools\JsonTools.cs" />
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
     <Compile Include="Lyrics\Tools\TimeTagTools.cs" />
+    <Compile Include="Lyrics\Translation\ITranslation.cs" />
+    <Compile Include="Lyrics\Translation\LanguageCode.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UI\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -155,7 +160,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
-    <None Include="LyricsTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Lyrics
 {
     [Flags]
-    public enum LanguageCode
+    public enum LanguageFlags
     {
         NONE = 1 << 0,
         /// <summary>

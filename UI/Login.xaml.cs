@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Lyrics.Baidu;
+using Lyrics.Translation.Baidu;
 using Lyrics;
 using System.ComponentModel;
 
@@ -38,7 +38,7 @@ namespace LyricsTools.UI
         {
 #if DEBUG
             MyData myData = new MyData();
-            MainWindow mainwindow = new MainWindow(new TranslateApi(myData.AppId, myData.SecretKey));
+            MainWindow mainwindow = new MainWindow(new BaiduTranslationApi(myData.AppId, myData.SecretKey));
             mainwindow.Show();
             Close();
 #else
@@ -48,7 +48,7 @@ namespace LyricsTools.UI
                 return;
             }
             
-            TranslateApi api = new TranslateApi(AppId.Text.Trim(), SecretKey.Text.Trim());
+            BaiduTranslationApi api = new BaiduTranslationApi(AppId.Text.Trim(), SecretKey.Text.Trim());
             bool isEffectiveAccount = api.VerifyAccount(out int errorCode, out string errorMessage);
             if (isEffectiveAccount)
             {
@@ -62,10 +62,10 @@ namespace LyricsTools.UI
                 mainwindow.Show();
                 Close();
             }
-            else if(errorCode == TranslateApi.ErrorCode.UNAUTHORIZED_USER)
+            else if(errorCode == BaiduTranslationApi.ErrorCode.UNAUTHORIZED_USER)
             {
                 string message = "";
-                if (errorCode == TranslateApi.ErrorCode.UNAUTHORIZED_USER)
+                if (errorCode == BaiduTranslationApi.ErrorCode.UNAUTHORIZED_USER)
                 {
                     message = "APP ID或秘钥错误! ";
                 }

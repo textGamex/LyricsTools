@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lyrics.Baidu
+namespace Lyrics.Translation.Baidu
 {
-    public partial class TranslateApi
+    public partial class BaiduTranslationApi
     {
         public class ErrorCode
         {
