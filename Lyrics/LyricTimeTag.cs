@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Lyrics
 {
-    public struct LyricTimeTag
+    public struct LyricTimeTag : IComparable<LyricTimeTag>, IComparer<LyricTimeTag>
     {
         /// <summary>
         /// 分钟最大值
@@ -128,6 +129,34 @@ namespace Lyrics
             return hashCode;
         }
 
+        public int Compare(LyricTimeTag x, LyricTimeTag y)
+        {
+            //if (x == null)
+            //    return -1;
+            //if (y == null)
+            //    return 1;
+            if (x == y)
+            {
+                return 0;
+            }
+
+            return x.ToMillisecond().CompareTo(y.ToMillisecond());           
+        }
+
+        public int CompareTo(LyricTimeTag x)
+        {
+            return Compare(this, x);
+        }
+
+        /// <summary>
+        /// 返回总和的毫秒
+        /// </summary>
+        /// <returns>换算成毫秒的数</returns>
+        public uint ToMillisecond()
+        {
+            return (Minute * 60 + Second) * 1000 + Millisecond;
+        }
+
         #region 运算符重载
 
         public static LyricTimeTag operator +(in LyricTimeTag lyric, in LyricTimeTag lyric1)
@@ -145,7 +174,31 @@ namespace Lyrics
             return !(left == right);
         }
 
+        public static bool operator >(in LyricTimeTag left, in LyricTimeTag right)
+        {
+            if (left == right)
+            {
+                return false;
+            }
 
+            if (left.CompareTo(right) > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator <(in LyricTimeTag left, in LyricTimeTag right)
+        {
+            if (left == right)
+            {
+                return false;
+            }
+            return !(left > right);
+        }
         #endregion
     }
 }
