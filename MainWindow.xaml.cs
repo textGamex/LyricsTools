@@ -92,11 +92,11 @@ namespace Lyricss
                         System.Threading.Thread.Sleep(1200);
                     }
                     _ = System.Windows.MessageBox.Show("完成");
-                }                
+                }                 
             }
             else
             {
-                _ = System.Windows.MessageBox.Show("未选择语言!");
+                _ = System.Windows.MessageBox.Show("请完成所有设置");
             }
             
         }
