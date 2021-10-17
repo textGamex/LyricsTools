@@ -22,12 +22,9 @@ namespace Lyrics.Translation.Baidu
 
                     string rawText = single.GetValue("src").ToString();
                     string translatedText = single.GetValue("dst").ToString();
-                    if (!data.ContainsKey(rawText))
-                    {
-                        data.Add(rawText, translatedText);
-                    }          
+                   
+                    data[rawText] = translatedText;                              
                 }
-
                 return data;
             }
         }

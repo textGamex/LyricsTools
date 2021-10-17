@@ -108,7 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Lyrics\Lyrics.cs" />
+    <Compile Include="Lyrics\LyricsCollection.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
     <Compile Include="Lyrics\Translation\LanguageFlags.cs" />

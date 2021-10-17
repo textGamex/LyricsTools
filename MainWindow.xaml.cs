@@ -79,6 +79,7 @@ namespace Lyricss
                             }
                         }
                         
+                        //进度条
                         ++completedNumber;
                         System.Diagnostics.Debug.Assert(totalNumber > 0);
                         double value = completedNumber / totalNumber * 100;
@@ -213,7 +214,7 @@ namespace Lyricss
             _ = System.Diagnostics.Process.Start("https://github.com/textGamex/LyricsTools");
         }
 
-        private string GetFileName(string filePath)
+        private static string GetFileName(string filePath)
         {
             Console.WriteLine(filePath);
             int index = filePath.LastIndexOf('\\') + 1;

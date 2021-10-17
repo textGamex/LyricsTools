@@ -49,6 +49,16 @@ namespace Lyrics
             millisecond = (ushort)newMillisecond;
         }
 
+        public LyricTimeTag(string line)
+        {
+            string timeTag = line.Split(new char[] {'[', ']'})[1];
+            string[] timeArray = timeTag.Split(new char[] {':', '.'});
+
+            minute = byte.Parse(timeArray[0]);
+            second = byte.Parse(timeArray[1]);
+            millisecond = ushort.Parse(timeArray[2]);
+        }
+
         /// <summary>
         /// 分钟
         /// </summary>
@@ -112,6 +122,11 @@ namespace Lyrics
             return new LyricTimeTag(newMinute, newSecond, newMillisecond);
         }
 
+        public override string ToString()
+        {
+            return ToTimeTag();
+        }
+
         public override bool Equals(object obj)
         {
             return obj is LyricTimeTag tag &&
@@ -131,10 +146,6 @@ namespace Lyrics
 
         public int Compare(LyricTimeTag x, LyricTimeTag y)
         {
-            //if (x == null)
-            //    return -1;
-            //if (y == null)
-            //    return 1;
             if (x == y)
             {
                 return 0;
@@ -175,12 +186,7 @@ namespace Lyrics
         }
 
         public static bool operator >(in LyricTimeTag left, in LyricTimeTag right)
-        {
-            if (left == right)
-            {
-                return false;
-            }
-
+        {            
             if (left.CompareTo(right) > 0)
             {
                 return true;
@@ -197,6 +203,16 @@ namespace Lyrics
             {
                 return false;
             }
+            return !(left > right);
+        }
+
+        public static bool operator >=(in LyricTimeTag left, in LyricTimeTag right)
+        {
+            return !(left < right);
+        }
+
+        public static bool operator <=(in LyricTimeTag left, in LyricTimeTag right)
+        {
             return !(left > right);
         }
         #endregion

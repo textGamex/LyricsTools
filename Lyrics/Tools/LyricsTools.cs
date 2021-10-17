@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lyrics
 {
@@ -23,19 +24,16 @@ namespace Lyrics
         /// <returns>一个字符串, 其中包含了集合中的所有字符串,并用换行符分隔开</returns>
         public static string ProcessingLyrics(in string[] lyrics)
         {
-            string[] newLyrics = new string[lyrics.Length];
-            uint index = 0;
-            foreach (string lyric in lyrics)
-            {
-                newLyrics[index++] = lyric;
-            }
+            List<string> newLyrics = new List<string>(lyrics);
+            //去除重复字符串, 以减少翻译字符数
+            newLyrics = newLyrics.Distinct().ToList();
 
-            StringBuilder sb = new StringBuilder(25);
-            for (int i = 0, max = newLyrics.Length - 1; i < max; ++i)
+            StringBuilder sb = new StringBuilder(60);
+            for (int i = 0, max = newLyrics.Count - 1; i < max; ++i)
             {               
                 sb.Append(newLyrics[i]).Append(Environment.NewLine);
             }
-            _ = sb.Append(newLyrics[newLyrics.Length - 1]);
+            _ = sb.Append(newLyrics[newLyrics.Count - 1]);
             return sb.ToString();
         }
 
