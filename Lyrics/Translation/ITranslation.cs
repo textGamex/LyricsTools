@@ -26,7 +26,6 @@ namespace Lyrics.Translation
         /// <param name="targetLanguage">目标语言</param>
         /// <returns>一个翻译完成的数组</returns>
         string[] GetTransResultArray(string[] rawDatas, string from, string targetLanguage);
-        string[] GetTransResultArray(string[] rawDatas, string targetLanguage);
         //bool VerifyAccount(out int errorCode, out string errorMessage);
     }
 }

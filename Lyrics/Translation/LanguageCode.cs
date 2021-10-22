@@ -2,7 +2,6 @@
 {
     public enum LanguageCode
     {
-        Unknown,
         Chinese,
         English
     }

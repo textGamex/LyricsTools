@@ -70,7 +70,7 @@ namespace Lyricss
                     foreach (string language in languages)
                     {                         
                         FileStream fileStream = new FileStream(fileSave.SelectedPath + $@"\{fileName}-{language}.lrc", FileMode.Create);
-                        string[] data = api.GetTransResultArray(rawDataAyyar, language.Trim());                        
+                        string[] data = api.GetTransResultArray(rawDataAyyar, "auto",language.Trim());                        
                         using (StreamWriter file = new StreamWriter(fileStream))
                         {
                             foreach (string s in data)

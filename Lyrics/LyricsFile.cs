@@ -11,7 +11,7 @@ namespace Lyrics
         private LinkedList<(LyricTimeTag timeTag, string lyrics)> data =
             new LinkedList<(LyricTimeTag timeTag, string lyrics)>();
         private readonly string fileName = "Music";
-        private readonly LanguageCode language = LanguageCode.Unknown;
+        private readonly LanguageType language = LanguageType.Unknown;
 
         public LyricsFile(string[] lrcFileRawData)
         {
@@ -103,16 +103,22 @@ namespace Lyrics
                     }
                     break;
                 }
-            }                       
+            }
         }
 
-        public void RemoveAfter()
+        public void RemoveAfter(LyricTimeTag removeTime)
         {
 
         }
+
+        //public bool 
+
         public int Count => data.Count;
         public string FileName => fileName;
-        public LanguageCode LyricsLanguage => language;       
+        /// <summary>
+        /// 歌词使用的语言
+        /// </summary>
+        public LanguageType LyricsLanguage => language;       
         #region foreach实现
 
         public IEnumerator<(LyricTimeTag, string)> GetEnumerator()

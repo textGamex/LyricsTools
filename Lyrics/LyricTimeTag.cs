@@ -171,9 +171,9 @@ namespace Lyrics
 
         #region 运算符重载
 
-        public static LyricTimeTag operator +(in LyricTimeTag lyric, in LyricTimeTag lyric1)
+        public static LyricTimeTag operator +(in LyricTimeTag left, in LyricTimeTag right)
         {
-            return lyric.PlusMillisecond(TimeTagTools.ToMillisecond(lyric1.Minute, lyric1.Second, lyric1.Millisecond));
+            return left.PlusMillisecond(right.ToMillisecond());
         }
 
         public static bool operator ==(in LyricTimeTag left, in LyricTimeTag right)

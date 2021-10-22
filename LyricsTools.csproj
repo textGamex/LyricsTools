@@ -112,15 +112,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Lyrics\LanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
     <Compile Include="Lyrics\Translation\LanguageFlags.cs" />
     <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
-    <Compile Include="Lyrics\Tools\JsonTools.cs" />
+    <Compile Include="Lyrics\Translation\Baidu\JsonTools.cs" />
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
-    <Compile Include="Lyrics\Tools\TimeTagTools.cs" />
     <Compile Include="Lyrics\Translation\ITranslation.cs" />
     <Compile Include="Lyrics\Translation\LanguageCode.cs" />
     <Compile Include="Settings.cs" />
@@ -186,9 +186,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lyrics\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Lyrics\MyData\data.txt" />
   </ItemGroup>
