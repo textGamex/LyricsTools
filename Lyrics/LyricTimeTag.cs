@@ -5,6 +5,7 @@ namespace Lyrics
 {
     public struct LyricTimeTag : IComparable<LyricTimeTag>, IComparer<LyricTimeTag>
     {
+        public readonly static LyricTimeTag Zero = new LyricTimeTag(0, 0, 0);
         /// <summary>
         /// 分钟最大值
         /// </summary>

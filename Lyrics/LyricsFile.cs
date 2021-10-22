@@ -85,15 +85,15 @@ namespace Lyrics
         /// <summary>
         /// 移除<c>removeTime</c>之前的timeTag及lyrics
         /// </summary>
-        /// <param name="removeTime">移除此时间标签前的所有时间标签</param>
-        public void RemoveBefore(LyricTimeTag removeTime)
+        /// <param name="removeTimeTag">移除此时间标签前的所有时间标签</param>
+        public void RemoveBefore(LyricTimeTag removeTimeTag)
         {
             for (var node = data.First; node != null; node = node.Next)
             {
-                if (node.Value.timeTag > removeTime)
+                if (node.Value.timeTag > removeTimeTag)
                 {
                     node = node.Previous;
-                    data.AddAfter(node, (removeTime, node.Value.lyrics));
+                    data.AddAfter(node, (removeTimeTag, node.Value.lyrics));
                     //删除node及所有node前的数据
                     for (LinkedListNode<(LyricTimeTag timeTag, string lyrics)> previous; node != null; node = previous)
                     {
@@ -106,11 +106,39 @@ namespace Lyrics
             }
         }
 
-        public void RemoveAfter(LyricTimeTag removeTime)
-        {
-
+        /// <summary>
+        /// 移除<c>removeTime</c>之后的timeTag及lyrics
+        /// </summary>
+        /// <param name="removeTimeTag">时间标签</param>
+        public void RemoveAfter(LyricTimeTag removeTimeTag)
+        {           
+            for (var node = data.First; node != null; node = node.Next)
+            {
+                if (node.Value.timeTag > removeTimeTag || node.Value.timeTag == removeTimeTag)
+                {
+                    data.AddBefore(node, (removeTimeTag, "---END---"));
+                    //删除node及所有node前的数据
+                    for (LinkedListNode<(LyricTimeTag timeTag, string lyrics)> next; node != null; node = next)
+                    {
+                        //Console.WriteLine("移除" + node.Value);
+                        next = node.Next;
+                        data.Remove(node);
+                    }
+                    break;
+                }
+            }
         }
 
+        /// <summary>
+        /// 截取其中一段时间
+        /// </summary>
+        /// <param name="statr">开始</param>
+        /// <param name="end">结束</param>
+        public void Intercept(LyricTimeTag statr, LyricTimeTag end)
+        {
+            RemoveBefore(statr);
+            RemoveAfter(end);
+        }
         //public bool 
 
         public int Count => data.Count;
