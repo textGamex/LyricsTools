@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Lyrics.Translation;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Lyrics.Translation;
 
 namespace Lyrics
 {
-    public class LyricsCollection : IEnumerable<(LyricTimeTag, string)>
+    public class LyricsFile : IEnumerable<(LyricTimeTag, string)>
     {
         private LinkedList<(LyricTimeTag timeTag, string lyrics)> data =
             new LinkedList<(LyricTimeTag timeTag, string lyrics)>();
-        private string fileName = "Music";
-        private LanguageCode language = LanguageCode.Unknown;
+        private readonly string fileName = "Music";
+        private readonly LanguageCode language = LanguageCode.Unknown;
 
-        public LyricsCollection(string[] lrcFileRawData)
+        public LyricsFile(string[] lrcFileRawData)
         {
             if (lrcFileRawData == null)
                 throw new ArgumentNullException(nameof(lrcFileRawData));
@@ -24,15 +24,15 @@ namespace Lyrics
             }
         }
 
-        public LyricsCollection(List<string> listData) : this(listData.ToArray())
+        public LyricsFile(List<string> listData) : this(listData.ToArray())
         {
         }
 
-        public LyricsCollection(LinkedList<string> linkData) : this(new List<string>(linkData))
+        public LyricsFile(LinkedList<string> linkData) : this(new List<string>(linkData))
         {
         }
 
-        public LyricsCollection(FileStream readFileStream)
+        public LyricsFile(FileStream readFileStream)
         {
             if (readFileStream == null)
                 throw new ArgumentNullException(nameof(readFileStream));
@@ -76,12 +76,40 @@ namespace Lyrics
                 {
                     foreach (var lrcData in data)
                     {
-                        file.WriteLine($"{lrcData.timeTag}{lrcData.lyrics}");
+                        file.WriteLine($"{lrcData.timeTag.ToTimeTag()}{lrcData.lyrics}");
                     }
                 }
             }
         }
-        
+
+        /// <summary>
+        /// 移除<c>removeTime</c>之前的timeTag及lyrics
+        /// </summary>
+        /// <param name="removeTime">移除此时间标签前的所有时间标签</param>
+        public void RemoveBefore(LyricTimeTag removeTime)
+        {
+            for (var node = data.First; node != null; node = node.Next)
+            {
+                if (node.Value.timeTag > removeTime)
+                {
+                    node = node.Previous;
+                    data.AddAfter(node, (removeTime, node.Value.lyrics));
+                    //删除node及所有node前的数据
+                    for (LinkedListNode<(LyricTimeTag timeTag, string lyrics)> previous; node != null; node = previous)
+                    {
+                        //Console.WriteLine("移除" + node.Value);
+                        previous = node.Previous;
+                        data.Remove(node);
+                    }
+                    break;
+                }
+            }                       
+        }
+
+        public void RemoveAfter()
+        {
+
+        }
         public int Count => data.Count;
         public string FileName => fileName;
         public LanguageCode LyricsLanguage => language;       

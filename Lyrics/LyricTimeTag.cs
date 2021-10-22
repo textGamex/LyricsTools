@@ -124,9 +124,18 @@ namespace Lyrics
 
         public override string ToString()
         {
-            return ToTimeTag();
+            return string.Format("{{分={0:d2} 秒={1:d2} 毫秒={2:d3} }}", Minute, Second, Millisecond);            
         }
 
+        /// <summary>
+        /// 返回总和的毫秒
+        /// </summary>
+        /// <returns>换算成毫秒的数</returns>
+        public uint ToMillisecond()
+        {
+            return (Minute * 60 + Second) * 1000 + Millisecond;
+        }
+        #region 杂
         public override bool Equals(object obj)
         {
             return obj is LyricTimeTag tag &&
@@ -158,15 +167,7 @@ namespace Lyrics
         {
             return Compare(this, x);
         }
-
-        /// <summary>
-        /// 返回总和的毫秒
-        /// </summary>
-        /// <returns>换算成毫秒的数</returns>
-        public uint ToMillisecond()
-        {
-            return (Minute * 60 + Second) * 1000 + Millisecond;
-        }
+        #endregion
 
         #region 运算符重载
 
