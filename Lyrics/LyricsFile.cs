@@ -171,6 +171,12 @@ namespace Lyrics
             return newLyricsFile;
         }
 
+        /// <summary>
+        /// 把<see cref="UnifiedLanguageCode"/>转换为等价的<see cref="LyricsLanguageType"/>
+        /// </summary>
+        /// <param name="unifiedLanguageCode"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         private LyricsLanguageType LanguageEnumConversion(UnifiedLanguageCode unifiedLanguageCode)
         {
             switch (unifiedLanguageCode)

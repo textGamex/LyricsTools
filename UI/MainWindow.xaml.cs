@@ -34,7 +34,9 @@ namespace Lyrics
             {
                 Filter = "歌词文件|*.lrc;*.txt"
             };
-            var aa = dialog.ShowDialog();
+            bool? aa = false;
+            if (stateCode == StateCode.NONE)
+                aa = dialog.ShowDialog();
             if (stateCode == StateCode.NONE && aa == true)
             {
                 fileName = GetFileName(dialog.FileName);
@@ -54,13 +56,10 @@ namespace Lyrics
                 }
                 getLrcPathButton.Content = "再次点击开始翻译";
                 stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;
+                return;
             }
 
             //TODO 做成两个按钮, 选择歌词文件和保存翻译后歌词文件分开
-            if (stateCode == StateCode.NONE && aa == false)
-            {
-                return;
-            }
             if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() != 0)
             {
                 FolderBrowserDialog UserSelectedPath = new FolderBrowserDialog()
@@ -72,13 +71,9 @@ namespace Lyrics
                 {
                     StartTranslate(UserSelectedPath);                    
                     _ = System.Windows.MessageBox.Show("完成");
-                }  
-                else
-                {
-                    return;
                 }
             }           
-            else
+            if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() == 0)
             {
                 _ = System.Windows.MessageBox.Show("请选择要翻译到哪种语言");
             }
