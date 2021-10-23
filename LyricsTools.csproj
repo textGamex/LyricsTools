@@ -141,6 +141,7 @@
     </ApplicationDefinition>
     <Compile Include="Lyrics\LanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
+    <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
     <Compile Include="Lyrics\Translation\LanguageFlags.cs" />

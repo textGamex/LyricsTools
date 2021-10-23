@@ -6,6 +6,7 @@ using System.Web;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using static LyricsTools.Tools.Debug;
 
 namespace Lyrics.Translation.Baidu
 { 
@@ -41,6 +42,13 @@ namespace Lyrics.Translation.Baidu
 
         public string GetTransResult(string query, string from, string to)
         {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (from == null)
+                throw new ArgumentNullException(nameof(from));
+            if (to == null)
+                throw new ArgumentNullException(nameof(to));
+            
             string randomNumber = random.Next(100000).ToString();
             string sign = GetSign(query, randomNumber);
             string url = GetUrl(query, from.ToLower(), to.ToLower(), randomNumber, sign);
@@ -64,8 +72,12 @@ namespace Lyrics.Translation.Baidu
         /// <param name="targetLanguage">目标语言</param>
         /// <param name="from">原始数据的语言</param>
         /// <returns>一个翻译完成的数组</returns>
+        /// <exception cref="ArgumentNullException">如果rawDatas为null</exception>
         public string[] GetTransResultArray(string[] rawDatas, string from, string targetLanguage)
         {
+            if (rawDatas == null)
+                throw new ArgumentNullException(nameof(rawDatas));
+
             foreach (string rawData in rawDatas)
             {
                 Console.WriteLine(rawData);
@@ -82,6 +94,7 @@ namespace Lyrics.Translation.Baidu
             Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
             List<string> rawDataArray = new List<string>(rawDatas);
 
+            //用翻译好的歌词替换原来的歌词
             foreach (string rawLyric in map.Keys)
             {
                 for (int index = 0, max = rawDataArray.Count; index < max; ++index)
@@ -101,7 +114,7 @@ namespace Lyrics.Translation.Baidu
             {
                 case LanguageCode.Chinese: return "zh";
                 case LanguageCode.English: return "en";
-                    default: throw new ArgumentException($"{languageCode}不存在");
+                    default: throw new ArgumentException($"{languageCode}未实现");
             }
         }
 
@@ -114,7 +127,7 @@ namespace Lyrics.Translation.Baidu
         }
 
         private string GetUrl(string query, string from, string to, string randomNumber, string sign)
-        {
+        {            
             StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate");
             url.Append("?q=").Append(HttpUtility.UrlEncode(query));
             url.Append("&from=").Append(from);
@@ -128,6 +141,7 @@ namespace Lyrics.Translation.Baidu
 
         private string TranslateText(string url)
         {
+            IsNotNull(url);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentType = "text/html;charset=UTF-8";
@@ -142,11 +156,12 @@ namespace Lyrics.Translation.Baidu
             myResponseStream.Close();
 
             return result;
-        }
+        }        
 
         // 计算MD5值
         private static string EncryptString(string str)
         {
+            IsNotNull(str);
             MD5 md5 = MD5.Create();
             // 将字符串转换成字节数组
             byte[] byteOld = Encoding.UTF8.GetBytes(str);

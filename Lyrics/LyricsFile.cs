@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using static System.Diagnostics.Debug;
 
 namespace Lyrics
 {
@@ -49,6 +50,8 @@ namespace Lyrics
 
         private static (LyricTimeTag timeTag, string lyrics) GetTimeTagAndLyrics(string rawLine)
         {
+            Assert(rawLine != null);
+
             (LyricTimeTag timeTag, string lyrics) lineData;
             lineData.timeTag = new LyricTimeTag(rawLine);
             lineData.lyrics = LyricsTools.GetLineLyric(rawLine);
@@ -57,6 +60,8 @@ namespace Lyrics
 
         private static string GetFileName(string filePath)
         {
+            Assert(filePath != null);
+
             Console.WriteLine(filePath);
             int index = filePath.LastIndexOf('\\') + 1;
             Console.WriteLine(index.ToString());
@@ -65,12 +70,12 @@ namespace Lyrics
             return newString.Split('.')[0];
         }
         
-        public void FileWriteTO(string savePath)
+        public void FileWriteTO(string saveFolderPath)
         {
-            if (savePath == null)
-                throw new ArgumentNullException(nameof(savePath));
+            if (saveFolderPath == null)
+                throw new ArgumentNullException(nameof(saveFolderPath));
 
-            using (FileStream fileStream = new FileStream(savePath + $@"\{fileName}-{language}.lrc", FileMode.Create))
+            using (FileStream fileStream = new FileStream(saveFolderPath + $@"\{fileName}-{language}.lrc", FileMode.Create))
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
@@ -86,7 +91,7 @@ namespace Lyrics
         /// 移除<c>removeTime</c>之前的timeTag及lyrics
         /// </summary>
         /// <param name="removeTimeTag">移除此时间标签前的所有时间标签</param>
-        public void RemoveBefore(LyricTimeTag removeTimeTag)
+        public void RemoveBefore(in LyricTimeTag removeTimeTag)
         {
             for (var node = data.First; node != null; node = node.Next)
             {
@@ -110,7 +115,7 @@ namespace Lyrics
         /// 移除<c>removeTime</c>之后的timeTag及lyrics
         /// </summary>
         /// <param name="removeTimeTag">时间标签</param>
-        public void RemoveAfter(LyricTimeTag removeTimeTag)
+        public void RemoveAfter(in LyricTimeTag removeTimeTag)
         {           
             for (var node = data.First; node != null; node = node.Next)
             {
@@ -134,7 +139,7 @@ namespace Lyrics
         /// </summary>
         /// <param name="statr">开始</param>
         /// <param name="end">结束</param>
-        public void Intercept(LyricTimeTag statr, LyricTimeTag end)
+        public void Intercept(in LyricTimeTag statr, in LyricTimeTag end)
         {
             RemoveBefore(statr);
             RemoveAfter(end);

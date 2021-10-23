@@ -52,6 +52,9 @@ namespace Lyrics
 
         public LyricTimeTag(string line)
         {
+            if (line == null)
+                throw new ArgumentNullException(nameof(line));
+
             string timeTag = line.Split(new char[] {'[', ']'})[1];
             string[] timeArray = timeTag.Split(new char[] {':', '.'});
 
