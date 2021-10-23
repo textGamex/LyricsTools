@@ -1,17 +1,22 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-//using System.Collections.Generic;
 
 namespace Lyrics.Translation.Baidu
 {
     public partial class BaiduTranslationApi
     {
         #region 解析 https://fanyi-api.baidu.com/api/trans/vip/translate 返回的json格式
-        public static class JsonTools
+        /// <summary>
+        /// 辅助类
+        /// </summary>
+        private static class JsonTools
         {
             public static Dictionary<string, string> GetTranslatedMap(string serverReturnedJson)
             {
+                if (serverReturnedJson == null)
+                    throw new ArgumentNullException(nameof(serverReturnedJson));
+
                 Dictionary<string, string> data = new Dictionary<string, string>();
                 JObject rawJson = JObject.Parse(serverReturnedJson);
                 JToken translatedTextArray = rawJson.GetValue("trans_result");

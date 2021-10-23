@@ -3,14 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using static System.Diagnostics.Debug;
+using static LyricsTools.Tools.Debug;
 
 namespace Lyrics
 {
-    public class LyricsFile : IEnumerable<(LyricTimeTag, string)>
+    public class LyricsFile : ICollection<(TimeTag, string)>
     {
-        private LinkedList<(LyricTimeTag timeTag, string lyrics)> data =
-            new LinkedList<(LyricTimeTag timeTag, string lyrics)>();
+        private LinkedList<(TimeTag timeTag, string lyrics)> data =
+            new LinkedList<(TimeTag timeTag, string lyrics)>();
         private readonly string fileName = "Music";
         private readonly LanguageType language = LanguageType.Unknown;
 
@@ -48,19 +48,17 @@ namespace Lyrics
             fileName = GetFileName(readFileStream.Name);
         }
 
-        private static (LyricTimeTag timeTag, string lyrics) GetTimeTagAndLyrics(string rawLine)
-        {
-            Assert(rawLine != null);
-
-            (LyricTimeTag timeTag, string lyrics) lineData;
-            lineData.timeTag = new LyricTimeTag(rawLine);
+        private static (TimeTag timeTag, string lyrics) GetTimeTagAndLyrics(string rawLine)
+        {            
+            (TimeTag timeTag, string lyrics) lineData;
+            lineData.timeTag = new TimeTag(rawLine);
             lineData.lyrics = LyricsTools.GetLineLyric(rawLine);
             return lineData;
         }
 
         private static string GetFileName(string filePath)
         {
-            Assert(filePath != null);
+            IsNotNull(filePath);
 
             Console.WriteLine(filePath);
             int index = filePath.LastIndexOf('\\') + 1;
@@ -91,7 +89,7 @@ namespace Lyrics
         /// 移除<c>removeTime</c>之前的timeTag及lyrics
         /// </summary>
         /// <param name="removeTimeTag">移除此时间标签前的所有时间标签</param>
-        public void RemoveBefore(in LyricTimeTag removeTimeTag)
+        public void RemoveBefore(in TimeTag removeTimeTag)
         {
             for (var node = data.First; node != null; node = node.Next)
             {
@@ -100,7 +98,7 @@ namespace Lyrics
                     node = node.Previous;
                     data.AddAfter(node, (removeTimeTag, node.Value.lyrics));
                     //删除node及所有node前的数据
-                    for (LinkedListNode<(LyricTimeTag timeTag, string lyrics)> previous; node != null; node = previous)
+                    for (LinkedListNode<(TimeTag timeTag, string lyrics)> previous; node != null; node = previous)
                     {
                         //Console.WriteLine("移除" + node.Value);
                         previous = node.Previous;
@@ -115,7 +113,7 @@ namespace Lyrics
         /// 移除<c>removeTime</c>之后的timeTag及lyrics
         /// </summary>
         /// <param name="removeTimeTag">时间标签</param>
-        public void RemoveAfter(in LyricTimeTag removeTimeTag)
+        public void RemoveAfter(in TimeTag removeTimeTag)
         {           
             for (var node = data.First; node != null; node = node.Next)
             {
@@ -123,7 +121,7 @@ namespace Lyrics
                 {
                     data.AddBefore(node, (removeTimeTag, "---END---"));
                     //删除node及所有node前的数据
-                    for (LinkedListNode<(LyricTimeTag timeTag, string lyrics)> next; node != null; node = next)
+                    for (LinkedListNode<(TimeTag timeTag, string lyrics)> next; node != null; node = next)
                     {
                         //Console.WriteLine("移除" + node.Value);
                         next = node.Next;
@@ -139,22 +137,23 @@ namespace Lyrics
         /// </summary>
         /// <param name="statr">开始</param>
         /// <param name="end">结束</param>
-        public void Intercept(in LyricTimeTag statr, in LyricTimeTag end)
+        public void InterceptTime(in TimeTag statr, in TimeTag end)
         {
             RemoveBefore(statr);
             RemoveAfter(end);
-        }
-        //public bool 
+        }        
 
         public int Count => data.Count;
         public string FileName => fileName;
+
         /// <summary>
         /// 歌词使用的语言
         /// </summary>
-        public LanguageType LyricsLanguage => language;       
-        #region foreach实现
+        public LanguageType LyricsLanguage => language;
 
-        public IEnumerator<(LyricTimeTag, string)> GetEnumerator()
+        #region ICollection接口实现
+
+        public IEnumerator<(TimeTag, string)> GetEnumerator()
         {
             return data.GetEnumerator();
         }
@@ -163,7 +162,34 @@ namespace Lyrics
         {
             return GetEnumerator();
         }
+        
+        public void Clear()
+        {
+            data.Clear();
+        }
 
+        public bool Contains((TimeTag, string) item)
+        {
+            return data.Contains(item);
+        }
+
+        public bool Remove((TimeTag, string) item)
+        {
+            return data.Remove(item);
+        }
+
+        bool ICollection<(TimeTag, string)>.IsReadOnly => false;
+
+        void ICollection<(TimeTag, string)>.Add((TimeTag, string) item)
+        {
+            data.AddLast(item);
+        }
+
+        void ICollection<(TimeTag, string)>.CopyTo((TimeTag, string)[] array, int arrayIndex)
+        {
+            data.CopyTo(array, arrayIndex);
+        }
+       
         #endregion
     }
 }

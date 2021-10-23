@@ -127,7 +127,7 @@ namespace Lyrics.Translation.Baidu
         }
 
         private string GetUrl(string query, string from, string to, string randomNumber, string sign)
-        {            
+        {
             StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate");
             url.Append("?q=").Append(HttpUtility.UrlEncode(query));
             url.Append("&from=").Append(from);

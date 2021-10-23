@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Lyrics
 {
-    public struct LyricTimeTag : IComparable<LyricTimeTag>, IComparer<LyricTimeTag>
+    public struct TimeTag : IComparable<TimeTag>, IComparer<TimeTag>
     {
-        public readonly static LyricTimeTag Zero = new LyricTimeTag(0, 0, 0);
+        public readonly static TimeTag Zero = new TimeTag(0, 0, 0);
         /// <summary>
         /// 分钟最大值
         /// </summary>
@@ -31,7 +31,7 @@ namespace Lyrics
         /// </summary>
         private readonly ushort millisecond;
 
-        public LyricTimeTag(uint newMinute, uint newSecond, uint newMillisecond)
+        public TimeTag(uint newMinute, uint newSecond, uint newMillisecond)
         {
             if (newMinute > MINUTE_MAX)
             {
@@ -50,7 +50,7 @@ namespace Lyrics
             millisecond = (ushort)newMillisecond;
         }
 
-        public LyricTimeTag(string line)
+        public TimeTag(string line)
         {
             if (line == null)
                 throw new ArgumentNullException(nameof(line));
@@ -103,7 +103,7 @@ namespace Lyrics
         /// <returns>基于this加上毫秒的副本</returns>
         /// <exception cref="ArgumentException">如果时间过大</exception>
         /// <date>2021-10-1</date>
-        public LyricTimeTag PlusMillisecond(uint addMillisecond)
+        public TimeTag PlusMillisecond(uint addMillisecond)
         {
             uint newMillisecond = Millisecond + addMillisecond;
             uint newMinute = Minute;
@@ -123,7 +123,7 @@ namespace Lyrics
             {
                 throw new ArgumentException($"{newMinute} > {MINUTE_MAX}");
             }
-            return new LyricTimeTag(newMinute, newSecond, newMillisecond);
+            return new TimeTag(newMinute, newSecond, newMillisecond);
         }
 
         public override string ToString()
@@ -142,7 +142,7 @@ namespace Lyrics
         #region 杂
         public override bool Equals(object obj)
         {
-            return obj is LyricTimeTag tag &&
+            return obj is TimeTag tag &&
                    minute == tag.minute &&
                    second == tag.second &&
                    millisecond == tag.millisecond;
@@ -157,7 +157,7 @@ namespace Lyrics
             return hashCode;
         }
 
-        public int Compare(LyricTimeTag x, LyricTimeTag y)
+        public int Compare(TimeTag x, TimeTag y)
         {
             if (x == y)
             {
@@ -167,7 +167,7 @@ namespace Lyrics
             return x.ToMillisecond().CompareTo(y.ToMillisecond());           
         }
 
-        public int CompareTo(LyricTimeTag x)
+        public int CompareTo(TimeTag x)
         {
             return Compare(this, x);
         }
@@ -175,22 +175,22 @@ namespace Lyrics
 
         #region 运算符重载
 
-        public static LyricTimeTag operator +(in LyricTimeTag left, in LyricTimeTag right)
+        public static TimeTag operator +(in TimeTag left, in TimeTag right)
         {
             return left.PlusMillisecond(right.ToMillisecond());
         }
 
-        public static bool operator ==(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator ==(in TimeTag left, in TimeTag right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator !=(in TimeTag left, in TimeTag right)
         {
             return !(left == right);
         }
 
-        public static bool operator >(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator >(in TimeTag left, in TimeTag right)
         {            
             if (left.CompareTo(right) > 0)
             {
@@ -202,7 +202,7 @@ namespace Lyrics
             }
         }
 
-        public static bool operator <(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator <(in TimeTag left, in TimeTag right)
         {
             if (left == right)
             {
@@ -211,12 +211,12 @@ namespace Lyrics
             return !(left > right);
         }
 
-        public static bool operator >=(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator >=(in TimeTag left, in TimeTag right)
         {
             return !(left < right);
         }
 
-        public static bool operator <=(in LyricTimeTag left, in LyricTimeTag right)
+        public static bool operator <=(in TimeTag left, in TimeTag right)
         {
             return !(left > right);
         }
