@@ -1,6 +1,6 @@
 ﻿namespace Lyrics
 {
-    public enum LanguageType
+    public enum LyricsLanguageType
     {
         Unknown,
         Chinese,

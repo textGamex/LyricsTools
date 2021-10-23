@@ -3,16 +3,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics
 {
-    public class LyricsFile : ICollection<(TimeTag, string)>
+    public class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
         private LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
         private readonly string fileName = "Music";
-        private readonly LanguageType language = LanguageType.Unknown;
+        private LyricsLanguageType language = LyricsLanguageType.Unknown;
 
         public LyricsFile(string[] lrcFileRawData)
         {
@@ -114,7 +115,7 @@ namespace Lyrics
         /// </summary>
         /// <param name="removeTimeTag">时间标签</param>
         public void RemoveAfter(in TimeTag removeTimeTag)
-        {           
+        {
             for (var node = data.First; node != null; node = node.Next)
             {
                 if (node.Value.timeTag > removeTimeTag || node.Value.timeTag == removeTimeTag)
@@ -143,13 +144,75 @@ namespace Lyrics
             RemoveAfter(end);
         }
 
+        public LyricsFile TranslateTo(ITranslation api ,UnifiedLanguageCode targetLanguage)
+        {
+            if (api == null)
+                throw new ArgumentNullException(nameof(api));
+
+            string rawLyrscs = GetAllLyrics();
+            string CorrespondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
+
+            var map = api.GetTransResultAndRawDataMap(rawLyrscs, "auto", CorrespondingLanguageCode);
+
+            LyricsFile newLyricsFile = (LyricsFile) ((ICloneable)this).Clone();
+            newLyricsFile.language = LanguageEnumConversion(targetLanguage);
+
+            foreach (string rawLyrics in map.Keys)
+            {
+                for (var node = newLyricsFile.data.First; node != null; node = node.Next)
+                {
+                    if (node.Value.lyrics == rawLyrics)
+                    {
+                        Console.WriteLine(map[rawLyrics]);
+                        node.Value = (node.Value.timeTag, map[rawLyrics]);
+                    }
+                }
+            }
+            return newLyricsFile;
+        }
+
+        private LyricsLanguageType LanguageEnumConversion(UnifiedLanguageCode unifiedLanguageCode)
+        {
+            switch (unifiedLanguageCode)
+            {
+                case UnifiedLanguageCode.English: return LyricsLanguageType.English;
+                case UnifiedLanguageCode.Chinese: return LyricsLanguageType.Chinese;
+                default: throw new Exception();
+            }
+        }
+
+        /// <summary>
+        /// 得到data里的所有lyrics
+        /// </summary>
+        /// <returns>data里的所有lyrics组成的一个字符串</returns>
+        private string GetAllLyrics()
+        {
+            List<string> lyrics = new List<string>();
+            foreach (var item in data)
+            {
+                lyrics.Add(item.lyrics);
+            }
+            return LyricsTools.ProcessingLyrics(lyrics);
+        }
+
+        public string[] ToLrcFileTypeArray()
+        {
+            List<string> list = new List<string>();
+
+            foreach (var (timeTag, lyrics) in data)
+            {
+                list.Add(string.Format($"{timeTag.ToTimeTag()}{lyrics}"));
+            }
+            return list.ToArray();
+        }
+
         public int Count => data.Count;
         public string FileName => fileName;
 
         /// <summary>
         /// 歌词使用的语言
         /// </summary>
-        public LanguageType LyricsLanguage => language;
+        public LyricsLanguageType LyricsLanguage => language;
 
         #region ICollection接口实现
 
@@ -189,7 +252,22 @@ namespace Lyrics
         {
             data.CopyTo(array, arrayIndex);
         }
-       
         #endregion
+
+        object ICloneable.Clone()
+        {
+            (TimeTag, string)[] array = new (TimeTag, string)[data.Count];
+            data.CopyTo(array, 0);
+
+            return new LyricsFile(array);
+        }
+
+        private LyricsFile((TimeTag, string)[] datas)
+        {
+            foreach (var itme in datas)
+            {
+                data.AddLast(itme);
+            }
+        }
     }
 }

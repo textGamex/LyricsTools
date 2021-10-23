@@ -139,8 +139,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Lyrics\LanguageType.cs" />
+    <Compile Include="Lyrics\LyricsLanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
+    <Compile Include="Lyrics\Translation\IAutoTranslation.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="Lyrics\Translation\Baidu\JsonTools.cs" />
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
     <Compile Include="Lyrics\Translation\ITranslation.cs" />
-    <Compile Include="Lyrics\Translation\LanguageCode.cs" />
+    <Compile Include="Lyrics\Translation\UnifiedLanguageCode.cs" />
     <Compile Include="Music\MusicInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UI\Login.xaml.cs">
@@ -193,7 +194,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
-    <None Include="log4net.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

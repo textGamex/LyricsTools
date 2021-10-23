@@ -6,7 +6,7 @@ using Lyrics.Translation.Baidu;
 using Lyrics.Translation;
 using Microsoft.Win32;
 using System.Windows.Forms;
-using Lyrics;
+using LyricsTools.Lyrics.Translation;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics
@@ -17,12 +17,12 @@ namespace Lyrics
     public partial class MainWindow : Window
     {
         private readonly List<string> rawData = new List<string>(64);
-        private readonly ITranslation api;
+        private readonly IAutoTranslation api;
         private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
         private string fileName = "音乐";
 
-        public MainWindow(ITranslation newApi)
+        public MainWindow(IAutoTranslation newApi)
         {
             api = newApi;
             InitializeComponent();

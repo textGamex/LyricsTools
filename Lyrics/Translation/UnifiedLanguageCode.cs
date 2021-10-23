@@ -1,6 +1,6 @@
 ﻿namespace Lyrics.Translation
 {
-    public enum LanguageCode
+    public enum UnifiedLanguageCode
     {
         Chinese,
         English

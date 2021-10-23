@@ -6,11 +6,12 @@ using System.Web;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using LyricsTools.Lyrics.Translation;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics.Translation.Baidu
 { 
-    public partial class BaiduTranslationApi : ITranslation
+    public partial class BaiduTranslationApi : IAutoTranslation
     {
         private readonly string appId;
         private readonly string secretKey;
@@ -42,6 +43,7 @@ namespace Lyrics.Translation.Baidu
 
         public string GetTransResult(string query, string from, string to)
         {
+            Console.WriteLine(query);
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
             if (from == null)
@@ -49,7 +51,7 @@ namespace Lyrics.Translation.Baidu
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
             
-            string randomNumber = random.Next(100000).ToString();
+            string randomNumber = random.Next().ToString();
             string sign = GetSign(query, randomNumber);
             string url = GetUrl(query, from.ToLower(), to.ToLower(), randomNumber, sign);
             return TranslateText(url);
@@ -60,10 +62,12 @@ namespace Lyrics.Translation.Baidu
             return GetTransResult(query, "auto", to);
         }
 
-        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        public Dictionary<string, string> GetTransResultAndRawDataMap(string query, string from, string to)
         {
-            return GetTransResultArray(rawDatas, "auto", targetLanguage);
-        }
+            Console.WriteLine(query);
+            string rawJson = GetTransResult(query, from, to.ToLower());
+            return JsonTools.GetTranslatedMap(rawJson);
+        }                
 
         /// <summary>
         /// 得到翻译后的集合
@@ -77,20 +81,16 @@ namespace Lyrics.Translation.Baidu
         {
             if (rawDatas == null)
                 throw new ArgumentNullException(nameof(rawDatas));
-
-            foreach (string rawData in rawDatas)
-            {
-                Console.WriteLine(rawData);
-            }
-            ///去除时间标签的歌词集合
+            
+            //去除时间标签的歌词集合
             List<string> processedData = new List<string>();
 
             foreach (string query in rawDatas)
             {
                 processedData.Add(LyricsTools.GetLineLyric(query));
             }
-            string one = LyricsTools.ProcessingLyrics(processedData.ToArray());
-            string rawJson = GetTransResult(one, from, targetLanguage.ToLower());
+            string rusalt = LyricsTools.ProcessingLyrics(processedData.ToArray());
+            string rawJson = GetTransResult(rusalt, from, targetLanguage.ToLower());
             Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
             List<string> rawDataArray = new List<string>(rawDatas);
 
@@ -108,12 +108,17 @@ namespace Lyrics.Translation.Baidu
             return rawDataArray.ToArray();
         }
 
-        public string GetStandardTranslationLanguageParameters(LanguageCode languageCode)
+        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        {
+            return GetTransResultArray(rawDatas, "auto", targetLanguage);
+        }
+
+        public string GetStandardTranslationLanguageParameters(UnifiedLanguageCode languageCode)
         {
             switch (languageCode)
             {
-                case LanguageCode.Chinese: return "zh";
-                case LanguageCode.English: return "en";
+                case UnifiedLanguageCode.Chinese: return "zh";
+                case UnifiedLanguageCode.English: return "en";
                     default: throw new ArgumentException($"{languageCode}未实现");
             }
         }

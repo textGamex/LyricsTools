@@ -1,4 +1,4 @@
-﻿using Lyricss;
+﻿using Lyrics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Lyrics.Translation.Baidu;
-using Lyrics;
 using System.ComponentModel;
 
 namespace LyricsTools.UI
@@ -27,7 +26,7 @@ namespace LyricsTools.UI
         {
             InitializeComponent();
             if (Properties.Settings.Default.IsAutoFill)
-            { 
+            {
                 AutoFillMessageCheckBox.IsChecked = true;
                 AppId.Text = Properties.Settings.Default.AppId;
                 SecretKey.Text = Properties.Settings.Default.SecretKey;

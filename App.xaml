@@ -1,7 +1,7 @@
-﻿<Application x:Class="Lyricss.App"
+﻿<Application x:Class="Lyrics.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Lyricss"
+             xmlns:local="clr-namespace:Lyrics"
              StartupUri="UI\Login.xaml">
     <Application.Resources>
          

@@ -18,22 +18,36 @@ namespace Lyrics
         }
 
         /// <summary>
-        /// 
+        /// 返回字符串, 其中包含了集合中的所有字符串,并用换行符分隔开, 会删除重复的字符串
         /// </summary>
         /// <param name="lyrics">LRC文件中的所有歌词, 不能带时间标签</param>
         /// <returns>一个字符串, 其中包含了集合中的所有字符串,并用换行符分隔开</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string ProcessingLyrics(in string[] lyrics)
+        {                       
+            return ProcessingLyrics(new List<string>(lyrics));
+        }
+
+        /// <summary>
+        /// 返回字符串, 其中包含了集合中的所有字符串,并用换行符分隔开, 会删除重复的字符串
+        /// </summary>
+        /// <param name="lyrics">LRC文件中的所有歌词, 不能带时间标签</param>
+        /// <returns>一个字符串, 其中包含了集合中的所有字符串,并用换行符分隔开</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string ProcessingLyrics(List<string> lyrics)
         {
-            List<string> newLyrics = new List<string>(lyrics);
+            if (lyrics == null)
+                throw new ArgumentNullException(nameof(lyrics));
+
             //去除重复字符串, 以减少翻译字符数
-            newLyrics = newLyrics.Distinct().ToList();
+            lyrics = lyrics.Distinct().ToList();
 
             StringBuilder sb = new StringBuilder(60);
-            for (int i = 0, max = newLyrics.Count - 1; i < max; ++i)
+            for (int i = 0, max = lyrics.Count - 1; i < max; ++i)
             {               
-                sb.Append(newLyrics[i]).Append(Environment.NewLine);
+                sb.Append(lyrics[i]).Append(Environment.NewLine);
             }
-            _ = sb.Append(newLyrics[newLyrics.Count - 1]);
+            _ = sb.Append(lyrics[lyrics.Count - 1]);
             return sb.ToString();
         }
 
