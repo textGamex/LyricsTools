@@ -89,7 +89,7 @@ namespace Lyricss
                         systenMessage.Content = $"{language}翻译完成";
 
                         fileStream.Close();
-                        System.Threading.Thread.Sleep(1200);
+                        System.Threading.Thread.Sleep(1100);
                     }
                     _ = System.Windows.MessageBox.Show("完成");
                 }                 
@@ -124,7 +124,33 @@ namespace Lyricss
 
         }
 
-#region 获得翻译语言
+        #region 获得需要翻译的语言
+
+        private void SelectAllSwitch_Checked(object sender, RoutedEventArgs e)
+        {
+            EnglishSwitch_Checked(sender, e);
+            JapaneseSwitch_Checked(sender, e);
+            ChineseSwich_Checked(sender, e);
+            TraditionalChineseSwich_Checked(sender, e);
+            GermanSwitch_Checked(sender, e);
+            FrenchSwitch_Checked(sender, e);
+            RussianSwitch_Checked(sender, e);
+            SpanishSwitch_Checked(sender, e);
+            CheckedAllLanguageCheck();
+        }   
+
+        private void SelectAllSwitch_Unchecked(object sender, RoutedEventArgs e)
+        {
+            EnglishSwitch_Unchecked(sender, e);
+            JapaneseSwitch_Unchecked(sender, e);
+            ChineseSwich_Unchecked(sender, e);
+            TraditionalChineseSwich_UnChecked(sender, e);
+            GermanSwitch_Unchecked(sender, e);
+            FrenchSwitch_Unchecked(sender, e);
+            RussianSwitch_Unchecked(sender, e);
+            SpanishSwitch_Unchecked(sender, e);
+            UnCheckedAllLanguageCheck();
+        }
 
         private void EnglishSwitch_Checked(object sender, RoutedEventArgs e)
         {
@@ -133,7 +159,7 @@ namespace Lyricss
 
         private void EnglishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.EN;
+            languageCode &= ~LanguageFlags.EN;
         }
 
         private void JapaneseSwitch_Checked(object sender, RoutedEventArgs e)
@@ -143,7 +169,7 @@ namespace Lyricss
 
         private void JapaneseSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.JP;
+            languageCode &= ~LanguageFlags.JP;
         }
        
         private void ChineseSwich_Checked(object sender, RoutedEventArgs e)
@@ -153,7 +179,7 @@ namespace Lyricss
 
         private void ChineseSwich_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.ZH;
+            languageCode &= ~LanguageFlags.ZH;
         }
 
         private void TraditionalChineseSwich_Checked(object sender, RoutedEventArgs e)
@@ -163,7 +189,7 @@ namespace Lyricss
 
         private void TraditionalChineseSwich_UnChecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.CHT;
+            languageCode &= ~LanguageFlags.CHT;
         }               
 
         private void GermanSwitch_Checked(object sender, RoutedEventArgs e)
@@ -173,7 +199,7 @@ namespace Lyricss
 
         private void GermanSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.DE;
+            languageCode &= ~LanguageFlags.DE;
         }
 
         private void RussianSwitch_Checked(object sender, RoutedEventArgs e)
@@ -183,7 +209,7 @@ namespace Lyricss
 
         private void RussianSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.RU;
+            languageCode &= ~LanguageFlags.RU;
         }
 
         private void FrenchSwitch_Checked(object sender, RoutedEventArgs e)
@@ -193,7 +219,7 @@ namespace Lyricss
 
         private void FrenchSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.FRA;
+            languageCode &= ~LanguageFlags.FRA;
         }
        
 
@@ -204,10 +230,28 @@ namespace Lyricss
 
         private void SpanishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode ^= LanguageFlags.SPA;
+            languageCode &= ~LanguageFlags.SPA;
         }
 
-#endregion
+        private void CheckedAllLanguageCheck()
+        {
+            var list = languageComboBox.Items;
+            foreach (System.Windows.Controls.CheckBox item in list)
+            {
+                item.IsChecked = true;
+            }
+        }
+
+        private void UnCheckedAllLanguageCheck()
+        {
+            var list = languageComboBox.Items;
+            foreach (System.Windows.Controls.CheckBox item in list)
+            {
+                item.IsChecked = false;
+            }
+        }
+
+        #endregion
 
         private void ProjectUrl_Click(object sender, RoutedEventArgs e)
         {
@@ -222,6 +266,6 @@ namespace Lyricss
             string newString = filePath.Substring(index);
             Console.WriteLine(newString);
             return newString.Split('.')[0];
-        }
+        }                
     }
 }

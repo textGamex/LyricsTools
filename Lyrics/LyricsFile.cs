@@ -141,7 +141,7 @@ namespace Lyrics
         {
             RemoveBefore(statr);
             RemoveAfter(end);
-        }        
+        }
 
         public int Count => data.Count;
         public string FileName => fileName;

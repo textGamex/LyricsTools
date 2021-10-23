@@ -31,6 +31,13 @@ namespace Lyrics
         /// </summary>
         private readonly ushort millisecond;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newMinute">分</param>
+        /// <param name="newSecond">秒</param>
+        /// <param name="newMillisecond">毫秒</param>
+        /// <exception cref="ArgumentException"></exception>
         public TimeTag(uint newMinute, uint newSecond, uint newMillisecond)
         {
             if (newMinute > MINUTE_MAX)
@@ -50,17 +57,26 @@ namespace Lyrics
             millisecond = (ushort)newMillisecond;
         }
 
+        /// <summary>
+        /// 使用字符串构建一个时间标签
+        /// </summary>
+        /// <param name="line">字符串形式的时间标签</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public TimeTag(string line)
         {
             if (line == null)
                 throw new ArgumentNullException(nameof(line));
 
+            //去除歌词和[]
             string timeTag = line.Split(new char[] {'[', ']'})[1];
             string[] timeArray = timeTag.Split(new char[] {':', '.'});
 
             minute = byte.Parse(timeArray[0]);
             second = byte.Parse(timeArray[1]);
-            millisecond = ushort.Parse(timeArray[2]);
+            string millisecondString = timeArray[2];            
+            millisecond = ushort.Parse(millisecondString);
+            if (millisecondString.Length == 2)
+                millisecond *= 10;
         }
 
         /// <summary>
