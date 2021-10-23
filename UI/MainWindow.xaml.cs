@@ -7,8 +7,9 @@ using Lyrics.Translation;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using Lyrics;
+using static LyricsTools.Tools.Debug;
 
-namespace Lyricss
+namespace Lyrics
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -33,7 +34,8 @@ namespace Lyricss
             {
                 Filter = "歌词文件|*.lrc;*.txt"
             };
-            if (stateCode == StateCode.NONE && dialog.ShowDialog() == true)
+            var aa = dialog.ShowDialog();
+            if (stateCode == StateCode.NONE && aa == true)
             {
                 fileName = GetFileName(dialog.FileName);
                 FileStream stream = new FileStream(dialog.FileName, FileMode.Open);
@@ -53,54 +55,89 @@ namespace Lyricss
                 getLrcPathButton.Content = "再次点击开始翻译";
                 stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;
             }
-            else if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() != 0)
+
+            //TODO 做成两个按钮, 选择歌词文件和保存翻译后歌词文件分开
+            if (stateCode == StateCode.NONE && aa == false)
             {
-                FolderBrowserDialog fileSave = new FolderBrowserDialog()
-                {
-                    Description = "保存文件夹"
-                };
-                if (fileSave.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    uint totalNumber = GetChoicesNumber();
-                    double completedNumber = 0;
-                    string[] languages = languageCode.ToString().Split(',');
-                    string[] rawDataAyyar = rawData.ToArray();
-
-                    //翻译歌词
-                    foreach (string language in languages)
-                    {                         
-                        FileStream fileStream = new FileStream(fileSave.SelectedPath + $@"\{fileName}-{language}.lrc", FileMode.Create);
-                        string[] data = api.GetTransResultArray(rawDataAyyar, "auto",language.Trim());                        
-                        using (StreamWriter file = new StreamWriter(fileStream))
-                        {
-                            foreach (string s in data)
-                            {
-                                file.WriteLine(s);
-                            }
-                        }
-                        
-                        //进度条
-                        ++completedNumber;
-                        System.Diagnostics.Debug.Assert(totalNumber > 0);
-                        double value = completedNumber / totalNumber * 100;
-                        translationProgressBar.Dispatcher.Invoke(new Action<DependencyProperty, object>
-                            (translationProgressBar.SetValue), System.Windows.Threading.DispatcherPriority.Input,
-                            System.Windows.Controls.ProgressBar.ValueProperty, value);
-                        systenMessage.Content = $"{language}翻译完成";
-
-                        fileStream.Close();
-                        System.Threading.Thread.Sleep(1100);
-                    }
-                    _ = System.Windows.MessageBox.Show("完成");
-                }                 
+                return;
             }
+            if (stateCode == StateCode.USER_HAS_SELECTED_LYRIC_FILES && GetChoicesNumber() != 0)
+            {
+                FolderBrowserDialog UserSelectedPath = new FolderBrowserDialog()
+                {
+                    Description = "选择保存文件夹"
+                };
+                var state = UserSelectedPath.ShowDialog();
+                if (state == System.Windows.Forms.DialogResult.OK)
+                {
+                    StartTranslate(UserSelectedPath);                    
+                    _ = System.Windows.MessageBox.Show("完成");
+                }  
+                else
+                {
+                    return;
+                }
+            }           
             else
             {
-                _ = System.Windows.MessageBox.Show("请完成所有设置");
+                _ = System.Windows.MessageBox.Show("请选择要翻译到哪种语言");
             }
             
         }
 
+        /// <summary>
+        /// 开始翻译, 并把开始按钮设为隐藏, 翻译完成后重新显示
+        /// </summary>
+        /// <param name="SaveFolderPath">翻译好的歌词要保存到的文件夹路径</param>
+        private void StartTranslate(FolderBrowserDialog SaveFolderPath)
+        {
+            IsNotNull(SaveFolderPath);
+            getLrcPathButton.Visibility = Visibility.Hidden;
+
+            uint totalNumber = GetChoicesNumber();
+            double completedNumber = 0;
+            string[] languages = languageCode.ToString().Split(',');
+            string[] rawDataAyyar = rawData.ToArray();
+
+            foreach (string language in languages)
+            {
+                FileStream fileStream = new FileStream(SaveFolderPath.SelectedPath + $@"\{fileName}-{language}.lrc", FileMode.Create);
+                string[] data = api.GetTransResultArray(rawDataAyyar, "auto", language.Trim());
+                using (StreamWriter file = new StreamWriter(fileStream))
+                {
+                    foreach (string s in data)
+                    {
+                        file.WriteLine(s);
+                    }
+                }
+
+                ++completedNumber;
+                System.Diagnostics.Debug.Assert(totalNumber > 0);
+                double value = completedNumber / totalNumber * 100;
+                UpdateProgressBar(value);
+                systenMessage.Content = $"{language}翻译完成";
+
+                fileStream.Close();
+                System.Threading.Thread.Sleep(1100);
+            }
+            getLrcPathButton.Visibility = Visibility.Hidden;
+        }
+
+        /// <summary>
+        /// 刷新进度条
+        /// </summary>
+        /// <param name="percentComplete">完成百分比</param>
+        private void UpdateProgressBar(double percentComplete)
+        {                       
+            translationProgressBar.Dispatcher.Invoke(new Action<DependencyProperty, object>
+                (translationProgressBar.SetValue), System.Windows.Threading.DispatcherPriority.Input,
+                System.Windows.Controls.ProgressBar.ValueProperty, percentComplete);            
+        }
+
+        /// <summary>
+        /// 用户选中的语言数量
+        /// </summary>
+        /// <returns>用户选中的语言数量</returns>
         private uint GetChoicesNumber()
         {
             uint count = 0;
