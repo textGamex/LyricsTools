@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{197706BF-03F8-40A4-A27C-F1204EDF0315}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>LyricsTools</RootNamespace>
     <AssemblyName>LyricsTranslationTool</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>LyricsTools.Music.MusicInfo</StartupObject>
+    <StartupObject>Lyrics.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>50D66A1CDF80ED03887700F30AA4B85A0D93D1EA</ManifestCertificateThumbprint>
@@ -114,6 +114,7 @@
     <Compile Include="Lyrics\LyricsLanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
     <Compile Include="Lyrics\Translation\IAutoTranslation.cs" />
+    <Compile Include="Lyrics\Translation\Youdao\YoudaoTranslateApi.cs" />
     <Compile Include="Music\RequestType.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Lyrics\Tools\LyricsTools.cs" />
     <Compile Include="Lyrics\Translation\ITranslation.cs" />
     <Compile Include="Lyrics\Translation\UnifiedLanguageCode.cs" />
-    <Compile Include="Music\MusicInfo.cs" />
+    <Compile Include="Music\Music163Info.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UI\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>

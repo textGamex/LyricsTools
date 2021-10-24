@@ -12,7 +12,7 @@ namespace LyricsTools.Music
     /// <summary>
     /// 提供音乐的信息
     /// </summary>
-    public class MusicInfo
+    public class Music163Info
     {
         static void Main(string[] args)
         {
@@ -27,14 +27,15 @@ namespace LyricsTools.Music
         /// <exception cref="ArgumentNullException">如果<c>MusicId</c>为null
         /// </exception>
         /// <exception cref="ArgumentException">MusicId不正确时</exception>
-        public MusicInfo(string MusicId)
+        public Music163Info(string MusicId)
         {
             if (MusicId == null)
                 throw new ArgumentNullException(nameof(MusicId));
             Id = ulong.Parse(MusicId);
 
+            //todo 整合网易云歌词和Lyrics(写个子类)
             string result = GetApiReturnInfo(GetRequestUrl(MusicId, RequestType.Detail));            
-            JObject rawJson = JObject.Parse(result);            
+            JObject rawJson = JObject.Parse(result);
             //错误检测
             var otherInfo = JObject.Parse(rawJson.GetValue("privileges")[0].ToString());
             if (otherInfo.GetValue("st").ToString() == "-200")
