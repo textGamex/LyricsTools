@@ -82,7 +82,7 @@ namespace Lyrics
         /// <summary>
         /// 分钟
         /// </summary>
-        public uint Minute 
+        public uint Minute
         {
             get => minute;
         }
@@ -119,7 +119,7 @@ namespace Lyrics
         /// <returns>基于this加上毫秒的副本</returns>
         /// <exception cref="ArgumentException">如果时间过大</exception>
         /// <date>2021-10-1</date>
-        public TimeTag PlusMillisecond(uint addMillisecond)
+        public TimeTag PlusMillisecond(in uint addMillisecond)
         {
             uint newMillisecond = Millisecond + addMillisecond;
             uint newMinute = Minute;
@@ -140,6 +140,19 @@ namespace Lyrics
                 throw new ArgumentException($"{newMinute} > {MINUTE_MAX}");
             }
             return new TimeTag(newMinute, newSecond, newMillisecond);
+        }
+
+        public TimeTag SubtractTimeTag(in TimeTag time)
+        {
+            if (time > this)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(time)} > this");
+            }
+            if (time == this)
+            {
+                return Zero;
+            }
+            return Zero.PlusMillisecond(this.ToMillisecond() - time.ToMillisecond());
         }
 
         public override string ToString()
@@ -194,6 +207,11 @@ namespace Lyrics
         public static TimeTag operator +(in TimeTag left, in TimeTag right)
         {
             return left.PlusMillisecond(right.ToMillisecond());
+        }
+
+        public static TimeTag operator -(in TimeTag left, in TimeTag right)
+        {
+            return left.SubtractTimeTag(right);
         }
 
         public static bool operator ==(in TimeTag left, in TimeTag right)

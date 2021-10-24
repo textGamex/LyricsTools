@@ -71,12 +71,12 @@ namespace LyricsTools.UI
                 if (label == RemoveBeforeLabel)
                 {
                     timeTag = GetTimeTag(StartMinute.Text, StartSecond.Text, StartMillisecond.Text);
-                    lyricsFile.RemoveAfter(timeTag);
+                    lyricsFile.RemoveBefore(timeTag);
                 }
                 else if (label == RemoveAfterLabel)
                 {
                     timeTag = GetTimeTag(EndMinute.Text, EndSecond.Text, EndMillisecond.Text);
-                    lyricsFile.RemoveBefore(timeTag);
+                    lyricsFile.RemoveAfter(timeTag);
                 }
                 else
                 {
@@ -132,6 +132,7 @@ namespace LyricsTools.UI
             {
                 ResetButton.Visibility = Visibility.Visible;
             }
+            SaveButton.Visibility = Visibility.Visible;
 
             foreach (Label l in e.AddedItems)
             {
@@ -168,7 +169,8 @@ namespace LyricsTools.UI
             Info4.Visibility = visibility;
 
             StartButton.Visibility = visibility;
-            ResetButton.Visibility = visibility;            
+            ResetButton.Visibility = visibility;       
+            SaveButton.Visibility = visibility;
         }
 
         private void SetBefore(Visibility visibility)
@@ -200,6 +202,20 @@ namespace LyricsTools.UI
         {
             Regex re = new Regex("[^0-9.-]+");
             e.Handled = re.IsMatch(e.Text);
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var UserSelectedPath = new System.Windows.Forms.FolderBrowserDialog()
+            {
+                Description = "选择保存文件夹"
+            };
+            var state = UserSelectedPath.ShowDialog();
+            if (state == System.Windows.Forms.DialogResult.OK)
+            {
+                lyricsFile.FileWriteTo(UserSelectedPath.SelectedPath);
+                _ = MessageBox.Show("完成");
+            }
         }
     }
 }

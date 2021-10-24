@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LyricsTools.UI"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="LyricsTools.UI.Processing"
         mc:Ignorable="d"
-        Title="Processing" Height="500" Width="800">
+        Title="歌词处理" Height="500" Width="800">
     <Grid>
         <TextBox x:Name="PreviewBox" HorizontalAlignment="Left" Margin="189,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440" Height="245" Focusable="False"/>
         <Button x:Name="GetLrcPathButton" Content="选择歌词文件" HorizontalAlignment="Left" Margin="320,80,0,0" VerticalAlignment="Top" Width="140" Height="30" Click="GetLrcPathButton_Click" FontSize="14" />
@@ -27,6 +27,7 @@
             <Label x:Name="InterceptTimeLabel" Content="截取指定时间区域内的" FontSize="11"/>
         </ComboBox>
         <Button x:Name="ResetButton" Content="重置" HorizontalAlignment="Left" Margin="101,212,0,0" VerticalAlignment="Top" Width="53" Click="ResetButton_Click"/>
+        <Button x:Name="SaveButton" Content="保存" HorizontalAlignment="Left" Margin="61,251,0,0" VerticalAlignment="Top" Width="70" Height="34" FontSize="16" Click="SaveButton_Click"/>
 
     </Grid>
 </Window>

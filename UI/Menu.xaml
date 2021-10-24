@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LyricsTools.UI"
         mc:Ignorable="d"
-        Title="Menu" Height="450" Width="800">
+        Title="菜单" Height="450" Width="800">
     <Grid>
         <Button x:Name="Translation" Content="歌词翻译" HorizontalAlignment="Left" Margin="235,0,0,0" VerticalAlignment="Center" Width="90" Height="33" Click="Translation_Click"/>
         <Button x:Name="Processing" Content="歌词截取" HorizontalAlignment="Left" Margin="460,0,0,0" VerticalAlignment="Center" Height="33" Width="90" Click="Processing_Click"/>

@@ -69,7 +69,7 @@ namespace Lyrics
             return newString.Split('.')[0];
         }
         
-        public void FileWriteTO(string saveFolderPath)
+        public void FileWriteTo(string saveFolderPath)
         {
             if (saveFolderPath == null)
                 throw new ArgumentNullException(nameof(saveFolderPath));
@@ -105,9 +105,15 @@ namespace Lyrics
                         previous = node.Previous;
                         data.Remove(node);
                     }
+                    //前移时间标签
+                    for (var n = data.First; n != null; n = n.Next)
+                    {                        
+                        n.Value = (n.Value.timeTag - removeTimeTag, n.Value.lyrics);
+                    }
                     break;
                 }
             }
+
         }
 
         /// <summary>
