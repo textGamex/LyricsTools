@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{197706BF-03F8-40A4-A27C-F1204EDF0315}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>LyricsTools</RootNamespace>
     <AssemblyName>LyricsTranslationTool</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Lyrics.App</StartupObject>
+    <StartupObject>LyricsTools.Music.MusicInfo</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>50D66A1CDF80ED03887700F30AA4B85A0D93D1EA</ManifestCertificateThumbprint>
@@ -80,6 +80,9 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -111,6 +114,7 @@
     <Compile Include="Lyrics\LyricsLanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
     <Compile Include="Lyrics\Translation\IAutoTranslation.cs" />
+    <Compile Include="Music\RequestType.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />

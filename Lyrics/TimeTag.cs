@@ -9,15 +9,15 @@ namespace Lyrics
         /// <summary>
         /// 分钟最大值
         /// </summary>
-        public readonly static byte MINUTE_MAX = 59;
+        public const byte MINUTE_MAX = 59;
         /// <summary>
         /// 秒最大值
         /// </summary>
-        public readonly static byte SECOND_MAX = 59;
+        public const byte SECOND_MAX = 59;
         /// <summary>
         /// 毫秒最大值
         /// </summary>
-        public static readonly ushort MILLISECOND_MAX = 999;
+        public const ushort MILLISECOND_MAX = 999;
         /// <summary>
         /// 分钟
         /// </summary>
