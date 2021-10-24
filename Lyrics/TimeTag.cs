@@ -37,20 +37,20 @@ namespace Lyrics
         /// <param name="newMinute">分</param>
         /// <param name="newSecond">秒</param>
         /// <param name="newMillisecond">毫秒</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public TimeTag(uint newMinute, uint newSecond, uint newMillisecond)
         {
             if (newMinute > MINUTE_MAX)
             {
-                throw new ArgumentException($"{newMinute} > {MINUTE_MAX}");
+                throw new ArgumentOutOfRangeException($"{newMinute} > {MINUTE_MAX}");
             }
             if (newSecond > SECOND_MAX)
             {
-                throw new ArgumentException($"{newSecond} > {SECOND_MAX}");
+                throw new ArgumentOutOfRangeException($"{newSecond} > {SECOND_MAX}");
             }
             if (newMillisecond > MILLISECOND_MAX)
             {
-                throw new ArgumentException($"{newMillisecond} > {MILLISECOND_MAX}");
+                throw new ArgumentOutOfRangeException($"{newMillisecond} > {MILLISECOND_MAX}");
             }
             minute = (byte)newMinute;
             second = (byte)newSecond;

@@ -30,5 +30,12 @@ namespace LyricsTools.UI
             login.Show();
             Close();            
         }
+
+        private void Processing_Click(object sender, RoutedEventArgs e)
+        {
+            Processing processing = new Processing();
+            processing.Show();
+            Close();
+        }
     }
 }

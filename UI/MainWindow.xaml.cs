@@ -44,15 +44,16 @@ namespace Lyrics
                 if (ops == true)
                 {
                     fileName = GetFileName(dialog.FileName);
-                    FileStream stream = new FileStream(dialog.FileName, FileMode.Open);
-                    using (StreamReader file = new StreamReader(stream))
+                    using (FileStream stream = new FileStream(dialog.FileName, FileMode.Open))
                     {
-                        while (!file.EndOfStream)
+                        using (StreamReader file = new StreamReader(stream))
                         {
-                            rawData.Add(file.ReadLine());
+                            while (!file.EndOfStream)
+                            {
+                                rawData.Add(file.ReadLine());
+                            }
                         }
-                    }
-                    stream.Close();
+                    }                    
 
                     foreach (string line in rawData)
                     {
