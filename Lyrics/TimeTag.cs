@@ -62,6 +62,7 @@ namespace Lyrics
         /// </summary>
         /// <param name="line">字符串形式的时间标签</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FormatException"></exception>
         public TimeTag(string line)
         {
             if (line == null)
@@ -70,11 +71,18 @@ namespace Lyrics
             //去除歌词和[]
             string timeTag = line.Split(new char[] {'[', ']'})[1];
             string[] timeArray = timeTag.Split(new char[] {':', '.'});
-
-            minute = byte.Parse(timeArray[0]);
-            second = byte.Parse(timeArray[1]);
-            string millisecondString = timeArray[2];            
-            millisecond = ushort.Parse(millisecondString);
+            string millisecondString;
+            try
+            {
+                minute = byte.Parse(timeArray[0]);
+                second = byte.Parse(timeArray[1]);
+                millisecondString = timeArray[2];
+                millisecond = ushort.Parse(millisecondString);
+            }
+            catch (FormatException)
+            {
+                throw;
+            }            
             if (millisecondString.Length == 2)
                 millisecond *= 10;
         }
@@ -208,7 +216,7 @@ namespace Lyrics
         {
             return left.PlusMillisecond(right.ToMillisecond());
         }
-
+        
         public static TimeTag operator -(in TimeTag left, in TimeTag right)
         {
             return left.SubtractTimeTag(right);

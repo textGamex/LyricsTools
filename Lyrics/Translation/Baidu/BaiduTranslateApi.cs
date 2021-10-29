@@ -126,7 +126,13 @@ namespace Lyrics.Translation.Baidu
             {
                 case UnifiedLanguageCode.Chinese: return "zh";
                 case UnifiedLanguageCode.English: return "en";
-                    default: throw new ArgumentException($"{languageCode}未实现");
+                case UnifiedLanguageCode.Japanese: return "jp";
+                case UnifiedLanguageCode.German: return "de";
+                case UnifiedLanguageCode.TraditionalChinese: return "cht";
+                case UnifiedLanguageCode.Russian: return "ru";
+                case UnifiedLanguageCode.French: return "fra";
+                case UnifiedLanguageCode.Spanish: return "spa";
+                default: throw new ArgumentException($"{languageCode}未实现");
             }
         }
 

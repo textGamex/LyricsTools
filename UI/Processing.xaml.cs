@@ -55,7 +55,7 @@ namespace LyricsTools.UI
         private void UpdatePreviewBox(LyricsFile lyricsFile)
         {
             var stringBulider = new StringBuilder();
-            foreach (string s in lyricsFile.ToLrcFileTypeArray())
+            foreach (string s in lyricsFile.GetLrcFileTypeArray())
             {
                 stringBulider.Append(s).Append(Environment.NewLine);
             }

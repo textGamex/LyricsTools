@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows;
 using Lyrics.Translation.Baidu;
 using Lyrics.Translation;
@@ -16,11 +17,10 @@ namespace Lyrics
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly List<string> rawData = new List<string>(64);
+        private LyricsFile lyricsFile;
         private readonly IAutoTranslation api;
         private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
-        private string fileName = "音乐";
 
         public MainWindow(IAutoTranslation newApi)
         {
@@ -43,22 +43,13 @@ namespace Lyrics
                     ops = dialog.ShowDialog();
                 if (ops == true)
                 {
-                    fileName = GetFileName(dialog.FileName);
-                    using (FileStream stream = new FileStream(dialog.FileName, FileMode.Open))
+                    lyricsFile = new LyricsFile(dialog.FileName);
+                    var outText = new StringBuilder();
+                    foreach (string line in lyricsFile.GetLrcFileTypeArray())
                     {
-                        using (StreamReader file = new StreamReader(stream))
-                        {
-                            while (!file.EndOfStream)
-                            {
-                                rawData.Add(file.ReadLine());
-                            }
-                        }
-                    }                    
-
-                    foreach (string line in rawData)
-                    {
-                        textOut.Text += line + Environment.NewLine;
+                        outText.Append(line).Append(Environment.NewLine);
                     }
+                    textOut.Text = outText.ToString();
                     getLrcPathButton.Content = "再次点击开始翻译";
                     stateCode = StateCode.USER_HAS_SELECTED_LYRIC_FILES;
                     return;
@@ -99,20 +90,12 @@ namespace Lyrics
 
             uint totalNumber = GetChoicesNumber();
             double completedNumber = 0;
-            string[] languages = languageCode.ToString().Split(',');
-            string[] rawDataAyyar = rawData.ToArray();
+            UnifiedLanguageCode[] languages = GetUnifiedLanguageCode(languageCode);
 
-            foreach (string language in languages)
+            foreach (var language in languages)
             {
-                FileStream fileStream = new FileStream(SaveFolderPath.SelectedPath + $@"\{fileName}-{language}.lrc", FileMode.Create);
-                string[] data = api.GetTransResultArray(rawDataAyyar, "auto", language.Trim());
-                using (StreamWriter file = new StreamWriter(fileStream))
-                {
-                    foreach (string s in data)
-                    {
-                        file.WriteLine(s);
-                    }
-                }
+                var newLyrics = lyricsFile.TranslateTo(api, language);
+                newLyrics.FileWriteTo(SaveFolderPath.SelectedPath);               
 
                 ++completedNumber;
                 System.Diagnostics.Debug.Assert(totalNumber > 0);
@@ -120,10 +103,47 @@ namespace Lyrics
                 UpdateProgressBar(value);
                 systenMessage.Content = $"{language}翻译完成";
 
-                fileStream.Close();
                 System.Threading.Thread.Sleep(1100);
             }
             getLrcPathButton.Visibility = Visibility.Hidden;
+        }
+
+        private UnifiedLanguageCode[] GetUnifiedLanguageCode(LanguageFlags language)
+        {
+            var list = new List<UnifiedLanguageCode>(8);
+            if (language.HasFlag(LanguageFlags.EN))
+            {
+                list.Add(UnifiedLanguageCode.English);
+            }
+            if (language.HasFlag(LanguageFlags.ZH))
+            {
+                list.Add(UnifiedLanguageCode.Chinese);
+            }
+            if (language.HasFlag(LanguageFlags.JP))
+            {
+                list.Add(UnifiedLanguageCode.Japanese);
+            }
+            if (language.HasFlag(LanguageFlags.DE))
+            {
+                list.Add(UnifiedLanguageCode.German);
+            }
+            if (language.HasFlag(LanguageFlags.CHT))
+            {
+                list.Add(UnifiedLanguageCode.TraditionalChinese);
+            }
+            if (language.HasFlag(LanguageFlags.SPA))
+            {
+                list.Add(UnifiedLanguageCode.Spanish);
+            }
+            if (language.HasFlag(LanguageFlags.RU))
+            {
+                list.Add(UnifiedLanguageCode.Russian);
+            }
+            if (language.HasFlag(LanguageFlags.FRA))
+            {
+                list.Add(UnifiedLanguageCode.French);
+            }
+            return list.ToArray();
         }
 
         /// <summary>

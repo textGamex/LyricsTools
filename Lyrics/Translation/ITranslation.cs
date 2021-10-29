@@ -12,9 +12,9 @@ namespace Lyrics.Translation
     public interface ITranslation
     {
         /// <summary>
-        /// 把<c>标准语言参数</c>翻译成API对应的<c>to</c>参数
+        /// 把<c>统一语言枚举</c>翻译成API对应的<c>to</c>字符串
         /// </summary>
-        /// <param name="standardLanguageParameters">标准语言参数</param>
+        /// <param name="standardLanguageParameters">统一语言枚举</param>
         /// <returns>API对应的<c>to</c>参数</returns>
         string GetStandardTranslationLanguageParameters(UnifiedLanguageCode standardLanguageParameters);
 

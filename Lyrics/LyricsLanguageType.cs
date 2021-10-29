@@ -4,6 +4,12 @@
     {
         Unknown,
         Chinese,
-        English
+        TraditionalChinese,
+        English,
+        Japanese,
+        German,
+        Russian,
+        Spanish,
+        French,
     }
 }

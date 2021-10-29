@@ -77,7 +77,7 @@ namespace Lyrics
         /// <exception cref="ArgumentNullException"></exception>
         public static List<string> GetNonRepeatingElement(List<string> array, out uint repeatingElementsNumber)
         {
-            return GetNonRepeatingElement(array, out repeatingElementsNumber);
+            return GetNonRepeatingElement(array.ToArray(), out repeatingElementsNumber);
         }
 
         /// <summary>

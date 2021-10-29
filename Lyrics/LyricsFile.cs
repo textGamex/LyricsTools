@@ -12,7 +12,10 @@ namespace Lyrics
     {
         private LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
-        private readonly string fileName = "Music";
+        public string MusicName
+        {
+            get; private set; 
+        }
         private LyricsLanguageType language = LyricsLanguageType.Unknown;
 
         public LyricsFile(string[] lrcFileRawData)
@@ -24,6 +27,8 @@ namespace Lyrics
             {
                 data.AddLast(GetTimeTagAndLyrics(item));
             }
+
+            MusicName = "Music";
         }
 
         public LyricsFile(List<string> listData) : this(listData.ToArray())
@@ -46,7 +51,26 @@ namespace Lyrics
                     data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
                 }
             }
-            fileName = GetFileName(readFileStream.Name);
+            MusicName = GetFileName(readFileStream.Name);
+        }
+
+        public LyricsFile(string filePath)
+        {
+            if (filePath == null)
+                throw new ArgumentNullException(nameof(filePath));
+
+            MusicName = GetFileName(filePath);
+
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                using (StreamReader streamReader = new StreamReader(fileStream))
+                {
+                    while (!streamReader.EndOfStream)
+                    {
+                        data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
+                    }
+                }
+            }            
         }
 
         private static (TimeTag timeTag, string lyrics) GetTimeTagAndLyrics(string rawLine)
@@ -61,12 +85,13 @@ namespace Lyrics
         {
             IsNotNull(filePath);
 
-            Console.WriteLine(filePath);
+            //Console.WriteLine("文件路径" + filePath);
             int index = filePath.LastIndexOf('\\') + 1;
-            Console.WriteLine(index.ToString());
+            //Console.WriteLine(index.ToString());
             string newString = filePath.Substring(index);
-            Console.WriteLine(newString);
-            return newString.Split('.')[0];
+            //Console.WriteLine(newString.Split('.')[0]);
+            string songName = newString.Split('.')[0];
+            return songName;
         }
         
         public void FileWriteTo(string saveFolderPath)
@@ -74,7 +99,7 @@ namespace Lyrics
             if (saveFolderPath == null)
                 throw new ArgumentNullException(nameof(saveFolderPath));
 
-            using (FileStream fileStream = new FileStream(saveFolderPath + $@"\{fileName}-{language}.lrc", FileMode.Create))
+            using (FileStream fileStream = new FileStream(saveFolderPath + $"\\{MusicName}-{language}.lrc", FileMode.Create))
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
@@ -150,27 +175,31 @@ namespace Lyrics
             RemoveAfter(end);
         }
 
-        public LyricsFile TranslateTo(ITranslation api ,UnifiedLanguageCode targetLanguage)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="api">翻译API</param>
+        /// <param name="targetLanguage">翻译到的语言</param>
+        /// <returns>一个新的<see cref="LyricsFile"/>对象</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public LyricsFile TranslateTo(ITranslation api, UnifiedLanguageCode targetLanguage)
         {
             if (api == null)
                 throw new ArgumentNullException(nameof(api));
-
-            string rawLyrscs = GetAllLyrics();
-            string CorrespondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
-
-            var map = api.GetTransResultAndRawDataMap(rawLyrscs, "auto", CorrespondingLanguageCode);
-
+                        
             LyricsFile newLyricsFile = (LyricsFile) ((ICloneable)this).Clone();
             newLyricsFile.language = LanguageEnumConversion(targetLanguage);
 
-            foreach (string rawLyrics in map.Keys)
+            string rawLyrscs = GetAllLyrics();
+            string correspondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
+            var translation = api.GetTransResultAndRawDataMap(rawLyrscs, "auto", correspondingLanguageCode);
+            foreach (string rawLyrics in translation.Keys)
             {
                 for (var node = newLyricsFile.data.First; node != null; node = node.Next)
                 {
                     if (node.Value.lyrics == rawLyrics)
                     {
-                        Console.WriteLine(map[rawLyrics]);
-                        node.Value = (node.Value.timeTag, map[rawLyrics]);
+                        node.Value = (node.Value.timeTag, translation[rawLyrics]);
                     }
                 }
             }
@@ -182,14 +211,21 @@ namespace Lyrics
         /// </summary>
         /// <param name="unifiedLanguageCode"></param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentException"></exception>
         private LyricsLanguageType LanguageEnumConversion(UnifiedLanguageCode unifiedLanguageCode)
         {
             switch (unifiedLanguageCode)
             {
                 case UnifiedLanguageCode.English: return LyricsLanguageType.English;
                 case UnifiedLanguageCode.Chinese: return LyricsLanguageType.Chinese;
-                default: throw new Exception();
+                case UnifiedLanguageCode.Japanese: return LyricsLanguageType.Japanese;
+                case UnifiedLanguageCode.German: return LyricsLanguageType.German;
+                case UnifiedLanguageCode.TraditionalChinese: return LyricsLanguageType.TraditionalChinese;
+                case UnifiedLanguageCode.Russian: return LyricsLanguageType.Russian;
+                case UnifiedLanguageCode.French: return LyricsLanguageType.French;
+                case UnifiedLanguageCode.Spanish: return LyricsLanguageType.Spanish;
+
+                default: throw new ArgumentException(nameof(unifiedLanguageCode));
             }
         }
 
@@ -207,7 +243,11 @@ namespace Lyrics
             return LyricsTool.ProcessingLyrics(lyrics);
         }
 
-        public string[] ToLrcFileTypeArray()
+        /// <summary>
+        /// 得到标准格式的LRC文件内容数组, 每个元素对应文件中的一行
+        /// </summary>
+        /// <returns>标准格式的LRC文件内容数组, 每个元素对应文件中的一行</returns>
+        public string[] GetLrcFileTypeArray()
         {
             List<string> list = new List<string>();
 
@@ -219,7 +259,6 @@ namespace Lyrics
         }
 
         public int Count => data.Count;
-        public string FileName => fileName;
 
         /// <summary>
         /// 歌词使用的语言
@@ -270,8 +309,9 @@ namespace Lyrics
         {
             (TimeTag, string)[] array = new (TimeTag, string)[data.Count];
             data.CopyTo(array, 0);
-
-            return new LyricsFile(array);
+            var clone = new LyricsFile(array);
+            clone.MusicName = this.MusicName;
+            return clone;
         }
 
         private LyricsFile((TimeTag, string)[] datas)
