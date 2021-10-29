@@ -18,11 +18,11 @@ namespace Lyrics
     public partial class MainWindow : Window
     {
         private LyricsFile lyricsFile;
-        private readonly IAutoTranslation api;
+        private readonly ITranslation api;
         private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
 
-        public MainWindow(IAutoTranslation newApi)
+        public MainWindow(ITranslation newApi)
         {
             api = newApi;
             InitializeComponent();
@@ -95,7 +95,7 @@ namespace Lyrics
             foreach (var language in languages)
             {
                 var newLyrics = lyricsFile.TranslateTo(api, language);
-                newLyrics.FileWriteTo(SaveFolderPath.SelectedPath);               
+                newLyrics.WriteFileTo(SaveFolderPath.SelectedPath);               
 
                 ++completedNumber;
                 System.Diagnostics.Debug.Assert(totalNumber > 0);

@@ -58,9 +58,7 @@ namespace Lyrics
         {
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
-
-            MusicName = GetFileName(filePath);
-
+            
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
             {
                 using (StreamReader streamReader = new StreamReader(fileStream))
@@ -70,7 +68,8 @@ namespace Lyrics
                         data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
                     }
                 }
-            }            
+            }
+            MusicName = GetFileName(filePath);
         }
 
         private static (TimeTag timeTag, string lyrics) GetTimeTagAndLyrics(string rawLine)
@@ -94,7 +93,7 @@ namespace Lyrics
             return songName;
         }
         
-        public void FileWriteTo(string saveFolderPath)
+        public void WriteFileTo(string saveFolderPath)
         {
             if (saveFolderPath == null)
                 throw new ArgumentNullException(nameof(saveFolderPath));

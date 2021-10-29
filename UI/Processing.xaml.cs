@@ -213,7 +213,7 @@ namespace LyricsTools.UI
             var state = UserSelectedPath.ShowDialog();
             if (state == System.Windows.Forms.DialogResult.OK)
             {
-                lyricsFile.FileWriteTo(UserSelectedPath.SelectedPath);
+                lyricsFile.WriteFileTo(UserSelectedPath.SelectedPath);
                 _ = MessageBox.Show("完成");
             }
         }

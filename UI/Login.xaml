@@ -19,6 +19,9 @@
         <Label Content="秘钥" HorizontalAlignment="Left" Margin="217,217,0,0" VerticalAlignment="Top" FontSize="13"/>
         <Label Content="请使用百度提供的翻译API,个人版是免费的" HorizontalAlignment="Center" Margin="0,105,0,0" VerticalAlignment="Top" Width="240"/>
         <CheckBox x:Name="AutoFillMessageCheckBox" Content="记住我" HorizontalAlignment="Left" Margin="280,257,0,0" VerticalAlignment="Top" Checked="AutoFillMessageCheckBox_Checked" Unchecked="AutoFillMessageCheckBox_Unchecked" Height="18" ToolTip=""/>
-
+        <ComboBox x:Name="ApiOption" HorizontalAlignment="Left" Margin="75,173,0,0" VerticalAlignment="Top" Width="125" SelectedIndex="0">
+            <Label x:Name="BaiduTranslation" Content="百度翻译" FontSize="11"/>
+            <Label x:Name="YoudaoTranslation" Content="有道翻译" FontSize="11"/>
+        </ComboBox>
     </Grid>
 </Window>

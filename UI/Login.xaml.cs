@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Lyrics.Translation.Baidu;
+using Lyrics.Translation.Youdao;
 using System.ComponentModel;
 
 namespace LyricsTools.UI
@@ -46,7 +47,22 @@ namespace LyricsTools.UI
                 _ = MessageBox.Show("请输入APP ID和秘钥!");
                 return;
             }
-            
+
+            var result = (Label) ApiOption.SelectedItem;
+            if (result == BaiduTranslation)
+            {
+
+            }
+            if (result == YoudaoTranslation)
+            {
+                MainWindow mainwindow = new MainWindow(new YoudaoTranslateApi(AppId.Text.Trim(), SecretKey.Text.Trim()));
+                MessageBox.Show("登录成功");
+                mainwindow.DebugButton.Visibility = Visibility.Collapsed;
+                mainwindow.Show();
+                Close();
+                return;
+            }
+
             BaiduTranslationApi api = new BaiduTranslationApi(AppId.Text.Trim(), SecretKey.Text.Trim());
             bool isEffectiveAccount = api.VerifyAccount(out int errorCode, out string errorMessage);
             if (isEffectiveAccount)

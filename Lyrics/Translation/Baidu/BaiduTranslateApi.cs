@@ -12,7 +12,7 @@ using static LyricsTools.Tools.Debug;
 
 namespace Lyrics.Translation.Baidu
 { 
-    public partial class BaiduTranslationApi : IAutoTranslation
+    public partial class BaiduTranslationApi : ITranslation
     {
         private readonly string appId;
         private readonly string secretKey;

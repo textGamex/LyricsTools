@@ -45,7 +45,7 @@ namespace Lyrics
             StringBuilder sb = new StringBuilder(60);
             for (int i = 0, max = lyrics.Count - 1; i < max; ++i)
             {               
-                sb.Append(lyrics[i]).Append(Environment.NewLine);
+                sb.Append(lyrics[i]).Append('\n');
             }
             _ = sb.Append(lyrics[lyrics.Count - 1]);
             return sb.ToString();
