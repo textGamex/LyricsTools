@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using LyricsTools.Lyrics.Translation;
+using LyricsTools.Lyrics;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics.Translation.Baidu
@@ -23,6 +24,12 @@ namespace Lyrics.Translation.Baidu
             secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
         }
 
+        /// <summary>
+        /// 检测ID和秘钥是否正确
+        /// </summary>
+        /// <param name="errorCode"></param>
+        /// <param name="errorMessage"></param>
+        /// <returns>如果正确, 返回true, 否则返回false</returns>
         public bool VerifyAccount(out int errorCode, out string errorMessage)
         {
             string message = GetTransResult("1", "en");
@@ -87,9 +94,9 @@ namespace Lyrics.Translation.Baidu
 
             foreach (string query in rawDatas)
             {
-                processedData.Add(LyricsTools.GetLineLyric(query));
+                processedData.Add(LyricsTool.GetLineLyric(query));
             }
-            string rusalt = LyricsTools.ProcessingLyrics(processedData.ToArray());
+            string rusalt = LyricsTool.ProcessingLyrics(processedData.ToArray());
             string rawJson = GetTransResult(rusalt, from, targetLanguage.ToLower());
             Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
             List<string> rawDataArray = new List<string>(rawDatas);
@@ -101,7 +108,7 @@ namespace Lyrics.Translation.Baidu
                 {
                     if (rawDataArray[index].Contains(rawLyric))
                     {
-                        rawDataArray[index] = LyricsTools.ReplaceLyric(rawDataArray[index], map[rawLyric]);
+                        rawDataArray[index] = LyricsTool.ReplaceLyric(rawDataArray[index], map[rawLyric]);
                     }
                 }
             }

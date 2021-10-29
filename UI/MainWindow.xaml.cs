@@ -147,7 +147,7 @@ namespace Lyrics
             var list = languageComboBox.Items;
             foreach (System.Windows.Controls.CheckBox item in list)
             {
-                if (item.IsChecked ?? false)
+                if ((item.IsChecked ?? false) && item != SelectAllSwitch)
                 {
                     ++count;
                 }

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Net;
 using System.IO;
@@ -18,8 +17,8 @@ namespace Lyrics.Translation.Youdao
 
         public YoudaoTranslateApi(string newAppId, string newSecretKey)
         {
-            appId = newAppId;
-            secretKey = newSecretKey;
+            appId = newAppId ?? throw new ArgumentNullException(nameof(newAppId));
+            secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
         }
 
         public Dictionary<string, string> GetTransResultAndRawDataMap(string query, string from, string to)
@@ -47,6 +46,13 @@ namespace Lyrics.Translation.Youdao
 
         public Dictionary<string, string> GetUrlMap(string query, string from, string to)
         {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (from == null)
+                throw new ArgumentNullException(nameof(from));
+            if (to == null)
+                throw new ArgumentNullException(nameof(to));
+
             Dictionary<string, string> dic = new Dictionary<string, string>();
             string salt = DateTime.Now.Millisecond.ToString();
             dic.Add("from", from);
@@ -96,14 +102,23 @@ namespace Lyrics.Translation.Youdao
             return result;
         }
 
-        protected static string ComputeHash(string input, HashAlgorithm algorithm)
+        public string GetStandardTranslationLanguageParameters(UnifiedLanguageCode standardLanguageParameters)
+        {
+            switch (standardLanguageParameters)
+            {
+                case UnifiedLanguageCode.English: return "en";
+                default: throw new ArgumentException();
+            }
+        }
+
+        private static string ComputeHash(string input, HashAlgorithm algorithm)
         {
             Byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             Byte[] hashedBytes = algorithm.ComputeHash(inputBytes);
             return BitConverter.ToString(hashedBytes).Replace("-", "");
         }
 
-        protected static string Truncate(string q)
+        private static string Truncate(string q)
         {
             if (q == null)
             {
@@ -112,42 +127,6 @@ namespace Lyrics.Translation.Youdao
             int len = q.Length;
             return len <= 20 ? q : (q.Substring(0, 10) + len + q.Substring(len - 10, 10));
         }
-
-        private static bool SaveBinaryFile(WebResponse response, string FileName)
-        {
-            string FilePath = FileName + DateTime.Now.Millisecond.ToString() + ".mp3";
-            bool Value = true;
-            byte[] buffer = new byte[1024];
-
-            try
-            {
-                if (File.Exists(FilePath))
-                    File.Delete(FilePath);
-                Stream outStream = System.IO.File.Create(FilePath);
-                Stream inStream = response.GetResponseStream();
-
-                int l;
-                do
-                {
-                    l = inStream.Read(buffer, 0, buffer.Length);
-                    if (l > 0)
-                        outStream.Write(buffer, 0, l);
-                }
-                while (l > 0);
-
-                outStream.Close();
-                inStream.Close();
-            }
-            catch
-            {
-                Value = false;
-            }
-            return Value;
-        }
-
-        public string GetStandardTranslationLanguageParameters(UnifiedLanguageCode standardLanguageParameters)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

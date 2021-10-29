@@ -53,7 +53,7 @@ namespace Lyrics
         {            
             (TimeTag timeTag, string lyrics) lineData;
             lineData.timeTag = new TimeTag(rawLine);
-            lineData.lyrics = LyricsTools.GetLineLyric(rawLine);
+            lineData.lyrics = LyricsTool.GetLineLyric(rawLine);
             return lineData;
         }
 
@@ -204,7 +204,7 @@ namespace Lyrics
             {
                 lyrics.Add(item.lyrics);
             }
-            return LyricsTools.ProcessingLyrics(lyrics);
+            return LyricsTool.ProcessingLyrics(lyrics);
         }
 
         public string[] ToLrcFileTypeArray()

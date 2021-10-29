@@ -34,6 +34,8 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -123,7 +125,7 @@
     <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\JsonTools.cs" />
-    <Compile Include="Lyrics\Tools\LyricsTools.cs" />
+    <Compile Include="Lyrics\Tools\LyricsTool.cs" />
     <Compile Include="Lyrics\Translation\ITranslation.cs" />
     <Compile Include="Lyrics\Translation\UnifiedLanguageCode.cs" />
     <Compile Include="Music\Music163Info.cs" />

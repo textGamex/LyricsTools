@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Lyrics
 {
-    public static class LyricsTools
+    public static class LyricsTool
     {
         /// <summary>
         /// 传入一行带时间标签的歌词, 返回其歌词部分
@@ -40,7 +40,7 @@ namespace Lyrics
                 throw new ArgumentNullException(nameof(lyrics));
 
             //去除重复字符串, 以减少翻译字符数
-            lyrics = lyrics.Distinct().ToList();
+            lyrics = GetNonRepeatingElement(lyrics, out _);
 
             StringBuilder sb = new StringBuilder(60);
             for (int i = 0, max = lyrics.Count - 1; i < max; ++i)
@@ -49,6 +49,35 @@ namespace Lyrics
             }
             _ = sb.Append(lyrics[lyrics.Count - 1]);
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 得到一个没有重复元素的集合
+        /// </summary>
+        /// <param name="array">需要处理的集合</param>
+        /// <param name="repeatingElementsNumber">重复元素的数量</param>
+        /// <returns>一个<see cref="List{T}"/>,包含<c>array</c>中不重复的元素</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static List<string> GetNonRepeatingElement(string[] array, out uint repeatingElementsNumber)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+
+            var newArray = new List<string>(array).Distinct().ToList();
+            repeatingElementsNumber = (uint)(array.Length - newArray.Count);
+            return newArray;
+        }
+
+        /// <summary>
+        /// 得到一个没有重复元素的集合
+        /// </summary>
+        /// <param name="array">需要处理的集合</param>
+        /// <param name="repeatingElementsNumber">重复元素的数量</param>
+        /// <returns>一个<see cref="List{T}"/>,包含<c>array</c>中不重复的元素</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static List<string> GetNonRepeatingElement(List<string> array, out uint repeatingElementsNumber)
+        {
+            return GetNonRepeatingElement(array, out repeatingElementsNumber);
         }
 
         /// <summary>
