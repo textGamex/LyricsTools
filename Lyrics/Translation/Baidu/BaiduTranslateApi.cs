@@ -48,6 +48,11 @@ namespace Lyrics.Translation.Baidu
             }
         }
 
+        public string GetTransResult(string query, string to)
+        {
+            return GetTransResult(query, "auto", to);
+        }
+
         public string GetTransResult(string query, string from, string to)
         {
             Console.WriteLine(query);
@@ -62,19 +67,19 @@ namespace Lyrics.Translation.Baidu
             string sign = GetSign(query, randomNumber);
             string url = GetUrl(query, from.ToLower(), to.ToLower(), randomNumber, sign);
             return TranslateText(url);
-        }
-
-        public string GetTransResult(string query, string to)
-        {
-            return GetTransResult(query, "auto", to);
-        }
+        }        
 
         public Dictionary<string, string> GetTransResultAndRawDataMap(string query, string from, string to)
         {
             Console.WriteLine(query);
             string rawJson = GetTransResult(query, from, to.ToLower());
             return JsonTools.GetTranslatedMap(rawJson);
-        }                
+        }
+
+        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
+        {
+            return GetTransResultArray(rawDatas, "auto", targetLanguage);
+        }
 
         /// <summary>
         /// 得到翻译后的集合
@@ -98,27 +103,22 @@ namespace Lyrics.Translation.Baidu
             }
             string rusalt = LyricsTool.ProcessingLyrics(processedData.ToArray());
             string rawJson = GetTransResult(rusalt, from, targetLanguage.ToLower());
-            Dictionary<string, string> map = JsonTools.GetTranslatedMap(rawJson);
+            Dictionary<string, string> translation = JsonTools.GetTranslatedMap(rawJson);
             List<string> rawDataArray = new List<string>(rawDatas);
 
             //用翻译好的歌词替换原来的歌词
-            foreach (string rawLyric in map.Keys)
+            foreach (string rawLyrics in translation.Keys)
             {
                 for (int index = 0, max = rawDataArray.Count; index < max; ++index)
                 {
-                    if (rawDataArray[index].Contains(rawLyric))
+                    if (rawDataArray[index] == rawLyrics)
                     {
-                        rawDataArray[index] = LyricsTool.ReplaceLyric(rawDataArray[index], map[rawLyric]);
+                        rawDataArray[index] = LyricsTool.ReplaceLyric(rawDataArray[index], translation[rawLyrics]);
                     }
                 }
             }
             return rawDataArray.ToArray();
-        }
-
-        public string[] GetTransResultArray(string[] rawDatas, string targetLanguage)
-        {
-            return GetTransResultArray(rawDatas, "auto", targetLanguage);
-        }
+        }       
 
         public string GetStandardTranslationLanguageParameters(UnifiedLanguageCode languageCode)
         {
@@ -168,9 +168,11 @@ namespace Lyrics.Translation.Baidu
             myResponseStream.Close();
 
             return result;
-        }        
+        }
 
-        // 计算MD5值
+        ///<summary>
+        ///计算MD5值
+        ///</summary> 
         private static string EncryptString(string str)
         {
             IsNotNull(str);
