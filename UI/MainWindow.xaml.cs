@@ -20,7 +20,7 @@ namespace Lyrics
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VERSION = "v1.0.0.0";
+        private const string VERSION = "v1.2.0.0";
 
         private LyricsFile lyricsFile;
         private readonly ITranslation api;
