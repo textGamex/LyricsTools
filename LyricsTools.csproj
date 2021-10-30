@@ -30,7 +30,7 @@
     <SupportUrl>https://gitee.com/mengxin_C/LyricsTools</SupportUrl>
     <ProductName>歌词翻译工具</ProductName>
     <PublisherName>留恋千年</PublisherName>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
