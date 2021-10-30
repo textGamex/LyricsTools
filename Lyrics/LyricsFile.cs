@@ -8,11 +8,15 @@ using static LyricsTools.Tools.Debug;
 
 namespace Lyrics
 {
-    public class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
+    /// <summary>
+    /// 处理LRC文件数据的类
+    /// </summary>
+    public partial class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
         //TODO 统计类, 别忘了GetNonRepeatingElement方法, 在LyricsTool
         private LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
+        public Logger Log { get; private set; } = new Logger();
         public string MusicName
         {
             get; private set; 
@@ -24,10 +28,17 @@ namespace Lyrics
             if (lrcFileRawData == null)
                 throw new ArgumentNullException(nameof(lrcFileRawData));
 
+            var list = new List<string>();
             foreach (var item in lrcFileRawData)
             {
-                data.AddLast(GetTimeTagAndLyrics(item));
+                var result = GetTimeTagAndLyrics(item);
+                list.Add(result.lyrics);
+                data.AddLast(result);
+                Log.TotalLineLength += (uint)result.lyrics.Length;
             }
+            _ = LyricsTool.GetNonRepeatingElement(list, out uint number);
+            Log.RepeatingItemNumber = number;
+            Log.TotalLine = (uint)lrcFileRawData.Length;
 
             MusicName = "Music";
         }
@@ -93,7 +104,12 @@ namespace Lyrics
             string songName = newString.Split('.')[0];
             return songName;
         }
-        
+
+        /// <summary>
+        /// 把对象写入到<c>saveFolderPath</c>
+        /// </summary>
+        /// <param name="saveFolderPath">写入路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void WriteFileTo(string saveFolderPath)
         {
             if (saveFolderPath == null)
@@ -103,9 +119,9 @@ namespace Lyrics
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
-                    foreach (var lrcData in data)
+                    foreach (var lrcInLine in data)
                     {
-                        file.WriteLine($"{lrcData.timeTag.ToTimeTag()}{lrcData.lyrics}");
+                        file.WriteLine($"{lrcInLine.timeTag.ToTimeTag()}{lrcInLine.lyrics}");
                     }
                 }
             }
@@ -176,7 +192,7 @@ namespace Lyrics
         }
 
         /// <summary>
-        /// 
+        /// 翻译到指定语种
         /// </summary>
         /// <param name="api">翻译API</param>
         /// <param name="targetLanguage">翻译到的语言</param>

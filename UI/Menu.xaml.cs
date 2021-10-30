@@ -84,8 +84,8 @@ namespace LyricsTools.UI
                     MessageBoxImage.Asterisk);
                 if (value == MessageBoxResult.Yes)
                 {
-                    var da = new UpdateWindow(gitInfo, result);
-                    da.ShowDialog();
+                    var updateWindows = new UpdateWindow(gitInfo, result);
+                    updateWindows.ShowDialog();
                 }
                 else
                 {

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Lyrics
 {
+    /// <summary>
+    /// LRC文件中的时间标签
+    /// </summary>
     public struct TimeTag : IComparable<TimeTag>, IComparer<TimeTag>
     {
         public readonly static TimeTag Zero = new TimeTag(0, 0, 0);
@@ -32,7 +35,7 @@ namespace Lyrics
         private readonly ushort millisecond;
 
         /// <summary>
-        /// 
+        /// 使用指定的分, 秒, 毫秒构建一个对象
         /// </summary>
         /// <param name="newMinute">分</param>
         /// <param name="newSecond">秒</param>
@@ -67,7 +70,14 @@ namespace Lyrics
         {
             if (line == null)
                 throw new ArgumentNullException(nameof(line));
-
+            //如果 [ 和 ] 没有同时出现在字符串中
+            if (!line.Contains("[") || !line.Contains("]"))
+                throw new FormatException();
+            if (!line.Contains(":"))
+                throw new FormatException("找不到 ':' ");            
+            if (line.Contains("."))
+                throw new FormatException("找不到 '.' ");
+            
             //去除歌词和[]
             string timeTag = line.Split(new char[] {'[', ']'})[1];
             string[] timeArray = timeTag.Split(new char[] {':', '.'});

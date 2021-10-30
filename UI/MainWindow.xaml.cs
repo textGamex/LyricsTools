@@ -323,7 +323,6 @@ namespace Lyrics
         #endregion
 
         
-
         private static string GetFileName(string filePath)
         {
             Console.WriteLine(filePath);
@@ -332,8 +331,6 @@ namespace Lyrics
             string newString = filePath.Substring(index);
             Console.WriteLine(newString);
             return newString.Split('.')[0];
-        }
-
-        
+        }        
     }
 }
