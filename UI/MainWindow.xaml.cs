@@ -19,15 +19,12 @@ namespace Lyrics
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
-    {
-       
-
+    {       
         private LyricsFile lyricsFile;
         private readonly ITranslation api;
         private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
         
-
         public MainWindow(ITranslation newApi)
         {
             if (newApi == null)

@@ -10,12 +10,17 @@
         <Button x:Name="Translation" Content="歌词翻译" HorizontalAlignment="Left" Margin="235,0,0,0" VerticalAlignment="Center" Width="90" Height="33" Click="Translation_Click"/>
         <Button x:Name="Processing" Content="歌词截取" HorizontalAlignment="Left" Margin="460,0,0,0" VerticalAlignment="Center" Height="33" Width="90" Click="Processing_Click"/>
         <ToolBarTray x:Name="toolBar" HorizontalAlignment="Center" Height="30" Margin="0,1,0,0" VerticalAlignment="Top" Width="800"/>
-        <Button x:Name="projectUrl" Content="项目地址" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Click="ProjectUrl_Click" Margin="1,1,0,0" Grid.Row="1" Grid.Column="1">
+        <Button x:Name="projectUrl" Content="项目地址" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Click="ProjectUrl_Click" Margin="0,1,0,0">
             <Button.BorderBrush>
                 <SolidColorBrush Color="#FF99B4D1" Opacity="0"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="Update" Content="检测更新" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Margin="75,1,0,0" Click="Update_Click">
+        <Button x:Name="Update" Content="检测更新" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Margin="74,0,0,0" Click="Update_Click">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="#FF99B4D1" Opacity="0"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="ProblemFeedback" Content="问题反馈" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Margin="148,0,0,0" Click="ProblemFeedback_Click">
             <Button.BorderBrush>
                 <SolidColorBrush Color="#FF99B4D1" Opacity="0"/>
             </Button.BorderBrush>

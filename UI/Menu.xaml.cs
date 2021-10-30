@@ -24,7 +24,7 @@ namespace LyricsTools.UI
     /// </summary>
     public partial class Menu : Window
     {
-        public const string VERSION = "v1.2.0.0";
+        public const string VERSION = "v1.2.0.1";
         public Menu()
         {
             InitializeComponent();
@@ -49,6 +49,12 @@ namespace LyricsTools.UI
         {
             _ = System.Diagnostics.Process.Start("https://github.com/textGamex/LyricsTools");
             _ = System.Diagnostics.Process.Start("https://gitee.com/mengxin_C/LyricsTools");
+        }
+
+        //问题反馈
+        private void ProblemFeedback_Click(object sender, RoutedEventArgs e)
+        {
+            _ = System.Diagnostics.Process.Start("https://gitee.com/mengxin_C/LyricsTools/issues");
         }
 
         //检查更新
@@ -137,5 +143,7 @@ namespace LyricsTools.UI
 
             return versionArray;
         }
+
+        
     }
 }
