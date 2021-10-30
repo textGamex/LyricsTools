@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="歌词处理" Height="500" Width="800">
     <Grid>
-        <TextBox x:Name="PreviewBox" HorizontalAlignment="Left" Margin="189,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440" Height="245" Focusable="False"/>
+        <TextBox x:Name="PreviewBox" HorizontalAlignment="Left" Margin="189,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440" Height="245" IsReadOnly="True"/>
         <Button x:Name="GetLrcPathButton" Content="选择歌词文件" HorizontalAlignment="Left" Margin="320,80,0,0" VerticalAlignment="Top" Width="140" Height="30" Click="GetLrcPathButton_Click" FontSize="14" />
         <TextBox x:Name="StartMinute" HorizontalAlignment="Left" Margin="38,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="25" Height="25" FontSize="14" MaxLength="2" PreviewTextInput="NumberPreviewTextInput" InputMethod.IsInputMethodEnabled="False"/>
         <TextBox x:Name="StartSecond" HorizontalAlignment="Left" Margin="68,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Height="25" MaxLength="2" FontSize="14" PreviewTextInput="NumberPreviewTextInput" InputMethod.IsInputMethodEnabled="False"/>

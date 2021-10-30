@@ -103,7 +103,9 @@ namespace Lyrics.Translation.Youdao
             builder.Append("appKey=").Append(dic["appKey"]).Append("&");
             builder.Append("salt=").Append(dic["salt"]).Append("&");
             builder.Append("sign=").Append(dic["sign"]);
-            Console.WriteLine(builder.ToString());
+
+            //Console.WriteLine(builder.ToString());
+
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(builder.ToString());
             req.Method = "GET";
             req.ContentType = "application/x-www-form-urlencoded";
@@ -115,7 +117,7 @@ namespace Lyrics.Translation.Youdao
             {
                 result = reader.ReadToEnd();
             }
-
+            stream.Close();
             return result;
         }
         

@@ -10,6 +10,7 @@ namespace Lyrics
 {
     public class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
+        //TODO 统计类, 别忘了GetNonRepeatingElement方法, 在LyricsTool
         private LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
         public string MusicName

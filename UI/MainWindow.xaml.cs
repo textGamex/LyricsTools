@@ -1,4 +1,5 @@
 ﻿using System;
+using LyricsTools.UI;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,8 +7,11 @@ using System.Windows;
 using Lyrics.Translation.Baidu;
 using Lyrics.Translation;
 using Microsoft.Win32;
-using System.Windows.Forms;
 using static LyricsTools.Tools.Debug;
+using System.Net;
+using Newtonsoft.Json.Linq;
+using LyricsTools.JsonClass;
+using Newtonsoft.Json;
 
 namespace Lyrics
 {
@@ -16,10 +20,13 @@ namespace Lyrics
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string VERSION = "v1.0.0.0";
+
         private LyricsFile lyricsFile;
         private readonly ITranslation api;
         private LanguageFlags languageCode;
         private StateCode stateCode = StateCode.NONE;
+        
 
         public MainWindow(ITranslation newApi)
         {
@@ -35,7 +42,7 @@ namespace Lyrics
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog
+            OpenFileDialog dialog = new OpenFileDialog
             {
                 Filter = "歌词文件|*.lrc;*.txt"
             };
@@ -66,7 +73,7 @@ namespace Lyrics
             {
                 if (GetChoicesNumber() != 0)
                 {
-                    FolderBrowserDialog UserSelectedPath = new FolderBrowserDialog()
+                    System.Windows.Forms.FolderBrowserDialog UserSelectedPath = new System.Windows.Forms.FolderBrowserDialog()
                     {
                         Description = "选择保存文件夹"
                     };
@@ -74,12 +81,12 @@ namespace Lyrics
                     if (state == System.Windows.Forms.DialogResult.OK)
                     {
                         StartTranslate(UserSelectedPath);
-                        _ = System.Windows.MessageBox.Show("完成");
+                        _ = MessageBox.Show("完成");
                     }
                 }
                 else
                 {
-                    _ = System.Windows.MessageBox.Show("请选择要翻译到哪种语言");
+                    _ = MessageBox.Show("请选择要翻译到哪种语言");
                 }
             }                       
         }
@@ -88,7 +95,7 @@ namespace Lyrics
         /// 开始翻译, 并把开始按钮设为隐藏, 翻译完成后重新显示
         /// </summary>
         /// <param name="SaveFolderPath">翻译好的歌词要保存到的文件夹路径</param>
-        private void StartTranslate(FolderBrowserDialog SaveFolderPath)
+        private void StartTranslate(System.Windows.Forms.FolderBrowserDialog SaveFolderPath)
         {
             IsNotNull(SaveFolderPath);
             getLrcPathButton.Visibility = Visibility.Hidden;
@@ -331,6 +338,82 @@ namespace Lyrics
             string newString = filePath.Substring(index);
             Console.WriteLine(newString);
             return newString.Split('.')[0];
-        }                
+        }
+
+        //检查更新
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            string url = "https://gitee.com/api/v5/repos/mengxin_C/LyricsTools/releases/latest?access_token=" + MyData.GiteeKey;
+
+            string result = "";
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "GET";
+            req.ContentType = "application/x-www-form-urlencoded";
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+
+            Stream stream = resp.GetResponseStream();
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                result = reader.ReadToEnd();
+            }
+            stream.Close();
+
+            GiteeReleases gitInfo = JsonConvert.DeserializeObject<GiteeReleases>(result);
+            if (IsUpdateVersion(gitInfo.Tag_name))
+            {
+                var value = MessageBox.Show("发现新版本, 是否更新?", "更新", MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Asterisk);
+                if (value == MessageBoxResult.Yes)
+                {
+                    var da = new UpdateWindow(gitInfo, result);
+                    da.ShowDialog();                    
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("暂无新版本更新");
+                return;
+            }                        
+        }
+
+        private bool IsUpdateVersion(string newVersion)
+        {
+            newVersion = newVersion.ToLower();
+            if (newVersion == VERSION.ToLower())
+            {
+                return false;
+            }
+
+            var newVersionArray = GetVersionCode(newVersion);
+            var thisVersionArray = GetVersionCode(VERSION.ToLower());
+            
+            for (int i = 0; i < newVersionArray.Length; ++i)
+            {
+                if (newVersionArray[i] > thisVersionArray[i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private byte[] GetVersionCode(string version)
+        {
+            version = version.Split('v')[1];
+            var info = version.Split('.');
+            byte[] versionArray = new byte[info.Length];
+
+            versionArray[0] = byte.Parse(info[0]);
+            versionArray[1] = byte.Parse(info[1]);
+            versionArray[2] = byte.Parse(info[2]);
+            versionArray[3] = byte.Parse(info[3]);
+
+            return versionArray;
+        }
     }
 }

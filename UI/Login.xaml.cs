@@ -1,5 +1,6 @@
 ﻿using Lyrics;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ using Lyrics.Translation.Baidu;
 using Lyrics.Translation.Youdao;
 using Lyrics.Translation;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace LyricsTools.UI
 {
@@ -38,8 +40,15 @@ namespace LyricsTools.UI
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            MyData myData = new MyData();
-            MainWindow mainwindow = new MainWindow(new BaiduTranslationApi(myData.AppId, myData.SecretKey));
+            MyData data = null;
+            using (FileStream fileStream = new FileStream(@"D:\IDE\Project\C#\data.json", FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fileStream))
+                {
+                    data = JsonConvert.DeserializeObject<MyData>(sr.ReadLine());
+                }
+            }
+            MainWindow mainwindow = new MainWindow(new BaiduTranslationApi(data.AppId, data.SecretKey));            
             mainwindow.Show();
             Close();
 #else
