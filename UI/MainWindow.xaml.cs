@@ -20,7 +20,7 @@ namespace Lyrics
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VERSION = "v1.2.0.0";
+       
 
         private LyricsFile lyricsFile;
         private readonly ITranslation api;
@@ -325,10 +325,7 @@ namespace Lyrics
 
         #endregion
 
-        private void ProjectUrl_Click(object sender, RoutedEventArgs e)
-        {
-            _ = System.Diagnostics.Process.Start("https://github.com/textGamex/LyricsTools");
-        }
+        
 
         private static string GetFileName(string filePath)
         {
@@ -340,80 +337,6 @@ namespace Lyrics
             return newString.Split('.')[0];
         }
 
-        //检查更新
-        private void Update_Click(object sender, RoutedEventArgs e)
-        {
-            string url = "https://gitee.com/api/v5/repos/mengxin_C/LyricsTools/releases/latest?access_token=" + MyData.GiteeKey;
-
-            string result = "";
-
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            req.Method = "GET";
-            req.ContentType = "application/x-www-form-urlencoded";
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-
-            Stream stream = resp.GetResponseStream();
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                result = reader.ReadToEnd();
-            }
-            stream.Close();
-
-            GiteeReleases gitInfo = JsonConvert.DeserializeObject<GiteeReleases>(result);
-            if (IsUpdateVersion(gitInfo.Tag_name))
-            {
-                var value = MessageBox.Show("发现新版本, 是否更新?", "更新", MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Asterisk);
-                if (value == MessageBoxResult.Yes)
-                {
-                    var da = new UpdateWindow(gitInfo, result);
-                    da.ShowDialog();                    
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("暂无新版本更新");
-                return;
-            }                        
-        }
-
-        private bool IsUpdateVersion(string newVersion)
-        {
-            newVersion = newVersion.ToLower();
-            if (newVersion == VERSION.ToLower())
-            {
-                return false;
-            }
-
-            var newVersionArray = GetVersionCode(newVersion);
-            var thisVersionArray = GetVersionCode(VERSION.ToLower());
-            
-            for (int i = 0; i < newVersionArray.Length; ++i)
-            {
-                if (newVersionArray[i] > thisVersionArray[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private byte[] GetVersionCode(string version)
-        {
-            version = version.Split('v')[1];
-            var info = version.Split('.');
-            byte[] versionArray = new byte[info.Length];
-
-            versionArray[0] = byte.Parse(info[0]);
-            versionArray[1] = byte.Parse(info[1]);
-            versionArray[2] = byte.Parse(info[2]);
-            versionArray[3] = byte.Parse(info[3]);
-
-            return versionArray;
-        }
+        
     }
 }

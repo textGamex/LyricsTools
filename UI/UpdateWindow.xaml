@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LyricsTools.UI"
         mc:Ignorable="d"
-        Title="UpdateWindow" Height="500" Width="800">
+        Title="更新" Height="500" Width="800">
     <Grid>
         <Image x:Name="AuthorImage" HorizontalAlignment="Left" Height="128" VerticalAlignment="Top" Width="128"/>
         <TextBox x:Name="UpdateContent" HorizontalAlignment="Left" Margin="155,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="500" Height="285" FontSize="14" IsReadOnly="True"/>

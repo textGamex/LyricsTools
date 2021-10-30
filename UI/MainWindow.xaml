@@ -22,17 +22,7 @@
             <CheckBox x:Name="SpanishSwitch" Content="西班牙语" Checked="SpanishSwitch_Checked" Unchecked="SpanishSwitch_Unchecked"/>
         </ComboBox>
         <ProgressBar x:Name="translationProgressBar" HorizontalAlignment="Center" Height="26" Margin="0,136,0,0" VerticalAlignment="Top" Width="272"/>
-        <ToolBarTray x:Name="toolBar" HorizontalAlignment="Center" Height="29" Margin="0,1,0,0" VerticalAlignment="Top" Width="800"/>
-        <Button x:Name="projectUrl" Content="项目地址" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="74" Background="White" Click="ProjectUrl_Click" Margin="1,1,0,0" Grid.Row="1" Grid.Column="1">
-            <Button.BorderBrush>
-                <SolidColorBrush Color="#FF99B4D1" Opacity="0"/>
-            </Button.BorderBrush>
-        </Button>
-        <Button x:Name="Update" Content="检测更新" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="75" Background="White" Margin="75,1,0,0" Click="Update_Click">
-            <Button.BorderBrush>
-                <SolidColorBrush Color="#FF99B4D1" Opacity="0"/>
-            </Button.BorderBrush>
-        </Button>
+        
 
     </Grid>
 </Window>
