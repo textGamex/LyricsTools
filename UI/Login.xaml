@@ -8,8 +8,8 @@
         Closing="DataWindow_Closing"
         Title="登录" Height="500" Width="800">
     <Grid x:Name="MainGrid" KeyDown="MainGrid_KeyDown">
-        <TextBox x:Name="AppId" HorizontalAlignment="Center" Margin="0,170,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="22"/>
-        <TextBox x:Name="SecretKey" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="23" Margin="0,217,0,0"/>
+        <TextBox x:Name="AppId" HorizontalAlignment="Center" Margin="0,170,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="22" FontSize="14"/>
+        <TextBox x:Name="SecretKey" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Width="240" Height="23" Margin="0,217,0,0" FontSize="14"/>
         <Button x:Name="LoginButton" Content="登录" HorizontalAlignment="Center" Margin="0,255,0,0" VerticalAlignment="Top" Width="70" Height="20" Click="LoginButton_Click" IsDefault="True" BorderThickness="0,0,0,0" FontSize="14">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>

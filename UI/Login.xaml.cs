@@ -57,10 +57,17 @@ namespace LyricsTools.UI
             {
                 api = new BaiduTranslationApi(AppId.Text, SecretKey.Text);        
             }
-            if (result == YoudaoTranslation)
+            else if (result == YoudaoTranslation)
             {
                 api = new YoudaoTranslateApi(AppId.Text, SecretKey.Text);                                            
             }
+            else
+            {
+                MessageBox.Show("未知的翻译API选项", "错误", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
             isEffectiveAccount = api.IsCorrectAccount(out int errorCode, out string errorMessage);
             if (isEffectiveAccount)
             {
@@ -71,7 +78,7 @@ namespace LyricsTools.UI
             }
             else if (errorCode != NoErrer)
             {
-                MessageBox.Show($"错误码:{errorCode} 错误信息:{errorMessage}", "错误", MessageBoxButton.OK,
+                MessageBox.Show($"错误码:{errorCode}\n错误信息:{errorMessage}", "错误", MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 return;
             }

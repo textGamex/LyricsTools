@@ -20,7 +20,7 @@ namespace Lyrics.Translation.Baidu
                 switch (errorCode)
                 {
                     case NoError: return "无错误";
-                    case UnauthorizedUser: return "未授权用户";
+                    case UnauthorizedUser: return "未授权用户, 请检查ID或秘钥是否正确或者服务是否开通";
                     case 52001: return "请求超时";
                     case 52002: return "系统错误";
                     case 54003: return "访问频率受限";
