@@ -6,8 +6,6 @@ using System.Web;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using LyricsTools.Lyrics.Translation;
-using LyricsTools.Lyrics;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics.Translation.Baidu
@@ -20,8 +18,8 @@ namespace Lyrics.Translation.Baidu
 
         public BaiduTranslationApi(string newAppId, string newSecretKey)
         {
-            appId = newAppId ?? throw new ArgumentNullException(nameof(newAppId));
-            secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
+            appId = newAppId.Trim() ?? throw new ArgumentNullException(nameof(newAppId));
+            secretKey = newSecretKey.Trim() ?? throw new ArgumentNullException(nameof(newSecretKey));
         }
 
         /// <summary>
@@ -30,20 +28,21 @@ namespace Lyrics.Translation.Baidu
         /// <param name="errorCode"></param>
         /// <param name="errorMessage"></param>
         /// <returns>如果正确, 返回true, 否则返回false</returns>
-        public bool VerifyAccount(out int errorCode, out string errorMessage)
+        public bool IsCorrectAccount(out int errorCode, out string errorMessage)
         {
             string message = GetTransResult("1", "en");
             JObject json = JObject.Parse(message);
             if (json.TryGetValue("error_code", out JToken getErrorCode))
             {
                 errorCode = int.Parse(getErrorCode.ToString());
-                errorMessage = json.GetValue("error_msg").ToString();
+                errorMessage = JsonTools.GetErrorMessage(errorCode);
+                //errorMessage = json.GetValue("error_msg").ToString();
                 return false;
             }
             else
             {
-                errorCode = 0;
-                errorMessage = string.Empty;
+                errorCode = JsonTools.NoError;
+                errorMessage = JsonTools.GetErrorMessage(errorCode);
                 return true;
             }
         }

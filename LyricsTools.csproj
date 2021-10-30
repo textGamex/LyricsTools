@@ -115,11 +115,10 @@
     </ApplicationDefinition>
     <Compile Include="Lyrics\LyricsLanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
-    <Compile Include="Lyrics\Translation\IAutoTranslation.cs" />
+    <Compile Include="Lyrics\Translation\Youdao\JsonTools.cs" />
     <Compile Include="Lyrics\Translation\Youdao\YoudaoTranslateApi.cs" />
     <Compile Include="Music\RequestType.cs" />
     <Compile Include="Tools\Debug.cs" />
-    <Compile Include="Lyrics\Translation\Baidu\BaiduApiErrorCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
     <Compile Include="Lyrics\Translation\LanguageFlags.cs" />
     <Compile Include="Lyrics\MyData\MyData.cs" />

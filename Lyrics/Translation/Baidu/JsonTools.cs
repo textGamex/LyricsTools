@@ -12,6 +12,23 @@ namespace Lyrics.Translation.Baidu
         /// </summary>
         private static class JsonTools
         {
+            public const int NoError = 0;
+            public const int UnauthorizedUser = 52003;
+
+            public static string GetErrorMessage(in int errorCode)
+            {
+                switch (errorCode)
+                {
+                    case NoError: return "无错误";
+                    case UnauthorizedUser: return "未授权用户";
+                    case 52001: return "请求超时";
+                    case 52002: return "系统错误";
+                    case 54003: return "访问频率受限";
+                    case 54004: return "账户余额不足";
+                    default: return "未知错误";
+                }
+            }
+
             public static Dictionary<string, string> GetTranslatedMap(string serverReturnedJson)
             {
                 if (serverReturnedJson == null)

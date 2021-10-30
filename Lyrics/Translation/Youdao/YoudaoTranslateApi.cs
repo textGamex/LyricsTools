@@ -10,21 +10,33 @@ using System.IO;
 
 namespace Lyrics.Translation.Youdao
 {
-    class YoudaoTranslateApi : ITranslation
+    public partial class YoudaoTranslateApi : ITranslation
     {
         private readonly string appId;
         private readonly string secretKey;
 
         public YoudaoTranslateApi(string newAppId, string newSecretKey)
         {
-            appId = newAppId ?? throw new ArgumentNullException(nameof(newAppId));
-            secretKey = newSecretKey ?? throw new ArgumentNullException(nameof(newSecretKey));
+            appId = newAppId.Trim() ?? throw new ArgumentNullException(nameof(newAppId));
+            secretKey = newSecretKey.Trim() ?? throw new ArgumentNullException(nameof(newSecretKey));
+        }
+
+        public bool IsCorrectAccount(out int errorCode, out string errorMessage)
+        {
+            var json = JObject.Parse(GetReturnResult("一", "auto", "en"));
+            var stateCode = json.GetValue("errorCode").ToString();
+            errorCode = int.Parse(stateCode);
+            errorMessage = JsonTools.GetErrorMessage(errorCode);
+           if (errorCode == JsonTools.NoError)
+                return true;
+           else
+                return false;
         }
 
         public Dictionary<string, string> GetTransResultAndRawDataMap(string query, string from, string to)
         {
-            var json = GetReturnResult(GetUrlMap(query, from, to));
-            return JsonToTranslatedMap(json);
+            var json = GetReturnResult(query, from, to);
+            return JsonTools.JsonToTranslatedMap(json);
         }
 
         public string GetStandardTranslationLanguageParameters(UnifiedLanguageCode standardLanguageParameters)
@@ -41,26 +53,8 @@ namespace Lyrics.Translation.Youdao
                 case UnifiedLanguageCode.Spanish: return "es";
                 default: throw new ArgumentException();
             }
-        }
-
-        private static Dictionary<string, string> JsonToTranslatedMap(string serverReturnedJson)
-        {
-            var map = new Dictionary<string, string>();
-            var json = JObject.Parse(serverReturnedJson);
-            Console.WriteLine(json.ToString());
-            string[] rawTextArray = json.GetValue("query").ToString().Split('\n');
-            string[] translationTextArray = json.GetValue("translation")[0].ToString().Split('\n');
-
-            if (rawTextArray.Length != translationTextArray.Length)
-                throw new Exception("奇怪的错误");
-
-            for (uint i = 0; i < rawTextArray.Length; ++i)
-            {
-                map[rawTextArray[i]] = translationTextArray[i];
-            }
-            return map;
-        }
-
+        }        
+        
         private Dictionary<string, string> GetUrlMap(string query, string from, string to)
         {
             if (query == null)
@@ -91,6 +85,11 @@ namespace Lyrics.Translation.Youdao
             return dic;
         }
 
+        private string GetReturnResult(string query, string from, string to)
+        {
+            return GetReturnResult(GetUrlMap(query, from, to));
+        }
+
         private string GetReturnResult(Dictionary<string, string> dic)
         {
             string result = "";
@@ -119,9 +118,7 @@ namespace Lyrics.Translation.Youdao
 
             return result;
         }
-
         
-
         private static string ComputeHash(string input, HashAlgorithm algorithm)
         {
             Byte[] inputBytes = Encoding.UTF8.GetBytes(input);

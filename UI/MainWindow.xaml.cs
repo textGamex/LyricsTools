@@ -7,7 +7,6 @@ using Lyrics.Translation.Baidu;
 using Lyrics.Translation;
 using Microsoft.Win32;
 using System.Windows.Forms;
-using LyricsTools.Lyrics.Translation;
 using static LyricsTools.Tools.Debug;
 
 namespace Lyrics
@@ -24,6 +23,12 @@ namespace Lyrics
 
         public MainWindow(ITranslation newApi)
         {
+            if (newApi == null)
+            {
+                System.Windows.Forms.MessageBox.Show("未知翻译API");
+                Close();
+            }
+                
             api = newApi;
             InitializeComponent();
         }

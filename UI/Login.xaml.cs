@@ -11,9 +11,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Lyrics.Translation.Baidu;
 using Lyrics.Translation.Youdao;
+using Lyrics.Translation;
 using System.ComponentModel;
 
 namespace LyricsTools.UI
@@ -23,6 +23,7 @@ namespace LyricsTools.UI
     /// </summary>
     public partial class Login : Window
     {
+        public const int NoErrer = 0;
         public Login()
         {
             InitializeComponent();
@@ -48,45 +49,38 @@ namespace LyricsTools.UI
                 return;
             }
 
+            ITranslation api = null;
+            bool isEffectiveAccount = false;
             var result = (Label) ApiOption.SelectedItem;
+
             if (result == BaiduTranslation)
             {
-
+                api = new BaiduTranslationApi(AppId.Text, SecretKey.Text);        
             }
             if (result == YoudaoTranslation)
             {
-                MainWindow mainwindow = new MainWindow(new YoudaoTranslateApi(AppId.Text.Trim(), SecretKey.Text.Trim()));
-                MessageBox.Show("登录成功");
-                mainwindow.DebugButton.Visibility = Visibility.Collapsed;
-                mainwindow.Show();
-                Close();
-                return;
+                api = new YoudaoTranslateApi(AppId.Text, SecretKey.Text);                                            
             }
-
-            BaiduTranslationApi api = new BaiduTranslationApi(AppId.Text.Trim(), SecretKey.Text.Trim());
-            bool isEffectiveAccount = api.VerifyAccount(out int errorCode, out string errorMessage);
+            isEffectiveAccount = api.IsCorrectAccount(out int errorCode, out string errorMessage);
             if (isEffectiveAccount)
             {
                 if (Properties.Settings.Default.IsAutoFill)
                 {
                     SaveUserAccountMessage();
                 }
-                MainWindow mainwindow = new MainWindow(api);
-                MessageBox.Show("登录成功");
-                mainwindow.DebugButton.Visibility = Visibility.Collapsed;
-                mainwindow.Show();
-                Close();
             }
-            else if(errorCode == BaiduTranslationApi.ErrorCode.UNAUTHORIZED_USER)
+            else if (errorCode != NoErrer)
             {
-                string message = "";
-                if (errorCode == BaiduTranslationApi.ErrorCode.UNAUTHORIZED_USER)
-                {
-                    message = "APP ID或秘钥错误! ";
-                }
-                MessageBox.Show($"{message}错误码:{errorCode} 错误信息:{errorMessage}", "错误",MessageBoxButton.OK,
+                MessageBox.Show($"错误码:{errorCode} 错误信息:{errorMessage}", "错误", MessageBoxButton.OK,
                     MessageBoxImage.Error);
-            }            
+                return;
+            }
+
+            MainWindow mainwindow = new MainWindow(api);
+            MessageBox.Show("登录成功");
+            mainwindow.DebugButton.Visibility = Visibility.Collapsed;
+            mainwindow.Show();
+            Close();              
 #endif
         }
 

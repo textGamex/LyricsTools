@@ -18,7 +18,14 @@ namespace Lyrics.Translation
         /// <returns>API对应的<c>to</c>参数</returns>
         string GetStandardTranslationLanguageParameters(UnifiedLanguageCode standardLanguageParameters);
 
-        //bool VerifyAccount(out int errorCode, out string errorMessage);
+        /// <summary>
+        /// 检测Id和秘钥是否正确
+        /// </summary>
+        /// <param name="errorCode">错误码</param>
+        /// <param name="errorMessage">错误信息</param>
+        /// <returns>如果正确, 返回true, 否则返回false</returns>
+        bool IsCorrectAccount(out int errorCode, out string errorMessage);
+
         /// <summary>
         /// 翻译字符串, 如果要一次性翻译多个字符串, 用换行符分隔每个字符串.
         /// </summary>
