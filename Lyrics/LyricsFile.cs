@@ -147,9 +147,9 @@ namespace Lyrics
                         data.Remove(node);
                     }
                     //前移时间标签
-                    for (var n = data.First; n != null; n = n.Next)
+                    for (var needRemoveNode = data.First; needRemoveNode != null; needRemoveNode = needRemoveNode.Next)
                     {                        
-                        n.Value = (n.Value.timeTag - removeTimeTag, n.Value.lyrics);
+                        needRemoveNode.Value = (needRemoveNode.Value.timeTag - removeTimeTag, needRemoveNode.Value.lyrics);
                     }
                     break;
                 }
