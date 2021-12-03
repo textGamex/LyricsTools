@@ -129,7 +129,6 @@
     <Compile Include="Lyrics\Translation\Youdao\YoudaoTranslateApi.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
-    <Compile Include="Lyrics\Translation\LanguageFlags.cs" />
     <Compile Include="Lyrics\MyData\MyData.cs" />
     <Compile Include="Lyrics\StateCode.cs" />
     <Compile Include="Lyrics\Translation\Baidu\JsonTools.cs" />
@@ -198,11 +197,17 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

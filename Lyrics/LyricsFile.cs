@@ -13,13 +13,10 @@ namespace Lyrics
     /// </summary>
     public partial class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
-        private LinkedList<(TimeTag timeTag, string lyrics)> data =
+        private readonly LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
-        public string MusicName
-        {
-            get; private set; 
-        }
-        private UnifiedLanguageCode? _language = null;
+        private UnifiedLanguageCode? _contentLanguage = null;
+        public string MusicName{ get; private set; }
 
         public LyricsFile(IEnumerable<string> lrcFileRawData)
         {
@@ -81,12 +78,9 @@ namespace Lyrics
         private static string GetFileName(string filePath)
         {
             IsNotNull(filePath);
-
-            //Console.WriteLine("文件路径" + filePath);
-            int index = filePath.LastIndexOf('\\') + 1;
-            //Console.WriteLine(index.ToString());
-            string newString = filePath.Substring(index);
-            //Console.WriteLine(newString.Split('.')[0]);
+            
+            int index = filePath.LastIndexOf('\\') + 1;            
+            string newString = filePath.Substring(index);            
             string songName = newString.Split('.')[0];
             return songName;
         }
@@ -101,13 +95,22 @@ namespace Lyrics
             if (saveFolderPath == null)
                 throw new ArgumentNullException(nameof(saveFolderPath));
 
-            using (FileStream fileStream = new FileStream(saveFolderPath + $"\\{MusicName}-{_language}.lrc", FileMode.Create))
+            string language;
+            if (_contentLanguage == null)
+            {
+                language = "Unknown";
+            }
+            else
+            {
+                language = _contentLanguage.ToString();
+            }
+            using (FileStream fileStream = new FileStream(saveFolderPath + $"\\{MusicName}-{language}.lrc", FileMode.Create))
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
-                    foreach (var lrcInLine in data)
+                    foreach (var (timeTag, lyrics) in data)
                     {
-                        file.WriteLine($"{lrcInLine.timeTag.ToTimeTag()}{lrcInLine.lyrics}");
+                        file.WriteLine($"{timeTag.ToTimeTag()}{lyrics}");
                     }
                 }
             }
@@ -128,13 +131,12 @@ namespace Lyrics
                     //删除node及所有node前的数据
                     for (LinkedListNode<(TimeTag timeTag, string lyrics)> previous; node != null; node = previous)
                     {
-                        //Console.WriteLine("移除" + node.Value);
                         previous = node.Previous;
                         data.Remove(node);
                     }
                     //前移时间标签
                     for (var needRemoveNode = data.First; needRemoveNode != null; needRemoveNode = needRemoveNode.Next)
-                    {                        
+                    {
                         needRemoveNode.Value = (needRemoveNode.Value.timeTag - removeTimeTag, needRemoveNode.Value.lyrics);
                     }
                     break;
@@ -195,7 +197,7 @@ namespace Lyrics
                 throw new ArgumentNullException(nameof(api));
                         
             LyricsFile newLyricsFile = (LyricsFile) ((ICloneable)this).Clone();
-            newLyricsFile._language = targetLanguage;
+            newLyricsFile._contentLanguage = targetLanguage;
 
             string rawLyrscs = GetAllLyrics();
             string correspondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
@@ -247,7 +249,7 @@ namespace Lyrics
         /// <summary>
         /// 歌词使用的语言
         /// </summary>
-        public UnifiedLanguageCode? LyricsLanguage => _language;
+        public UnifiedLanguageCode? LyricsLanguage => _contentLanguage;
 
         #region ICollection接口实现
 
