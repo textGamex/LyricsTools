@@ -13,10 +13,8 @@ namespace Lyrics
     /// </summary>
     public partial class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
-        //TODO 统计类, 别忘了GetNonRepeatingElement方法, 在LyricsTool
         private LinkedList<(TimeTag timeTag, string lyrics)> data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
-        public Logger Log { get; private set; } = new Logger();
         public string MusicName
         {
             get; private set; 
@@ -34,11 +32,7 @@ namespace Lyrics
                 var result = GetTimeTagAndLyrics(item);
                 list.Add(result.lyrics);
                 data.AddLast(result);
-                Log.TotalLineLength += (uint)result.lyrics.Length;
             }
-            _ = LyricsTool.GetNonRepeatingElement(list, out uint number);
-            Log.RepeatingItemNumber = number;
-            Log.TotalLine = (uint)lrcFileRawData.Length;
 
             MusicName = "Music";
         }
