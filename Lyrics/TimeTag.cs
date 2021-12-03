@@ -24,15 +24,15 @@ namespace Lyrics
         /// <summary>
         /// 分钟
         /// </summary>
-        private readonly byte minute;
+        private readonly byte _minute;
         /// <summary>
         /// 秒
         /// </summary>
-        private readonly byte second;
+        private readonly byte _second;
         /// <summary>
         /// 毫秒
         /// </summary>
-        private readonly ushort millisecond;
+        private readonly ushort _millisecond;
 
         /// <summary>
         /// 使用指定的分, 秒, 毫秒构建一个对象
@@ -55,9 +55,9 @@ namespace Lyrics
             {
                 throw new ArgumentOutOfRangeException($"{newMillisecond} > {MILLISECOND_MAX}");
             }
-            minute = (byte)newMinute;
-            second = (byte)newSecond;
-            millisecond = (ushort)newMillisecond;
+            _minute = (byte)newMinute;
+            _second = (byte)newSecond;
+            _millisecond = (ushort)newMillisecond;
         }
 
         /// <summary>
@@ -84,41 +84,41 @@ namespace Lyrics
             string millisecondString;
             try
             {
-                minute = byte.Parse(timeArray[0]);
-                second = byte.Parse(timeArray[1]);
+                _minute = byte.Parse(timeArray[0]);
+                _second = byte.Parse(timeArray[1]);
                 millisecondString = timeArray[2];
-                millisecond = ushort.Parse(millisecondString);
+                _millisecond = ushort.Parse(millisecondString);
             }
             catch (FormatException)
             {
                 throw;
             }            
             if (millisecondString.Length == 2)
-                millisecond *= 10;
+                _millisecond *= 10;
         }
 
-        /// <summary>
+        /// <value>
         /// 分钟
-        /// </summary>
+        /// </value>
         public uint Minute
         {
-            get => minute;
+            get => _minute;
         }
 
-        /// <summary>
+        /// <value>
         /// 秒
-        /// </summary>
+        /// </value>
         public uint Second
         {
-            get => second;
+            get => _second;
         }
 
-        /// <summary>
+        /// <value>
         /// 毫秒
-        /// </summary>
+        /// </value>
         public uint Millisecond
         {
-            get => millisecond;
+            get => _millisecond;
         }
 
         /// <summary>
@@ -186,22 +186,21 @@ namespace Lyrics
         {
             return (Minute * 60 + Second) * 1000 + Millisecond;
         }
-        #region 杂
+        #region 相等性, 散列码
         public override bool Equals(object obj)
         {
             return obj is TimeTag tag &&
-                   minute == tag.minute &&
-                   second == tag.second &&
-                   millisecond == tag.millisecond;
+                   _minute == tag._minute &&
+                   _second == tag._second &&
+                   _millisecond == tag._millisecond;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = -1864587320;
-            hashCode = hashCode * -1521134295 + minute.GetHashCode();
-            hashCode = hashCode * -1521134295 + second.GetHashCode();
-            hashCode = hashCode * -1521134295 + millisecond.GetHashCode();
-            return hashCode;
+            int hash = _minute;
+            hash = hash * 31 + _second;
+            hash = hash * 31 + _millisecond;
+            return hash;
         }
 
         public int Compare(TimeTag x, TimeTag y)

@@ -146,7 +146,6 @@ namespace Lyrics.Translation.Baidu
 
         private string GetUrl(string query, string from, string to, string randomNumber, string sign)
         {
-            //StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate");
             const string url = "http://api.fanyi.baidu.com/api/trans/vip/translate";
             var map = new Dictionary<string, string>()
             {
@@ -165,17 +164,18 @@ namespace Lyrics.Translation.Baidu
         {
             IsNotNull(url);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
             request.ContentType = "text/html;charset=UTF-8";
-            request.UserAgent = null;
             request.Timeout = 6000;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
-            string result =  myStreamReader.ReadToEnd();
 
-            myStreamReader.Close();
-            myResponseStream.Close();
+            string result;
+            using (Stream myResponseStream = response.GetResponseStream())
+            {
+                using (StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8")))
+                {
+                    result = myStreamReader.ReadToEnd();
+                }                
+            }                      
 
             return result;
         }

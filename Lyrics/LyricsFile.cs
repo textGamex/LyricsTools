@@ -179,8 +179,13 @@ namespace Lyrics
         /// </summary>
         /// <param name="statr">开始</param>
         /// <param name="end">结束</param>
+        /// <exception cref="ArgumentException">statr 大于 end</exception>
         public void InterceptTime(in TimeTag statr, in TimeTag end)
         {
+            if (statr < end)
+            {
+                throw new ArgumentException();
+            }
             RemoveBefore(statr);
             RemoveAfter(end);
         }
