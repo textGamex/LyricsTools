@@ -10,7 +10,7 @@
         <TextBox x:Name="textOut" HorizontalAlignment="Center" Margin="0,167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" Height="220" IsReadOnly="True"/>
         <Label x:Name="systenMessage" Content="" HorizontalAlignment="Left" Margin="335,101,0,0" VerticalAlignment="Top" Width="232"/>
         <Button x:Name="DebugButton" Content="调试" HorizontalAlignment="Left" Margin="97,131,0,0" VerticalAlignment="Top" Click="Button_Click_1" Width="37"/>
-        <ComboBox x:Name="languageComboBox" HorizontalAlignment="Left" Margin="34,107,0,0" VerticalAlignment="Top" Width="126" IsSynchronizedWithCurrentItem="True" SelectionChanged="ComboBox_SelectionChanged" Height="19">
+        <ComboBox x:Name="languageComboBox" HorizontalAlignment="Left" Margin="34,107,0,0" VerticalAlignment="Top" Width="126" IsSynchronizedWithCurrentItem="True" Height="19">
             <CheckBox x:Name="SelectAllSwitch" Content="全选" Unchecked="SelectAllSwitch_Unchecked" Checked="SelectAllSwitch_Checked"/>
             <CheckBox x:Name="ChineseSwich" Content="简体中文" ClickMode="Press" Checked="ChineseSwich_Checked" Unchecked="ChineseSwich_Unchecked"/>
             <CheckBox x:Name="TraditionalChineseSwich" Content="繁体中文" Checked="TraditionalChineseSwich_Checked" Unchecked="TraditionalChineseSwich_UnChecked"/>

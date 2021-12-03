@@ -92,7 +92,6 @@ namespace Lyrics.Translation.Youdao
 
         private string GetReturnResult(Dictionary<string, string> dic)
         {
-            string result = "";
 
             StringBuilder builder = new StringBuilder("https://openapi.youdao.com/api").Append("/?");
             builder.Append("from=").Append(dic["from"]).Append("&");
@@ -107,17 +106,18 @@ namespace Lyrics.Translation.Youdao
             //Console.WriteLine(builder.ToString());
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(builder.ToString());
-            req.Method = "GET";
             req.ContentType = "application/x-www-form-urlencoded";
 
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
-            Stream stream = resp.GetResponseStream();
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            string result = "";
+            using (Stream stream = resp.GetResponseStream())
             {
-                result = reader.ReadToEnd();
-            }
-            stream.Close();
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    result = reader.ReadToEnd();
+                }
+            }           
             return result;
         }
         

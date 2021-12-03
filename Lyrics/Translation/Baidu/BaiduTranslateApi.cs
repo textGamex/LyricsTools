@@ -95,17 +95,18 @@ namespace Lyrics.Translation.Baidu
                 throw new ArgumentNullException(nameof(rawDatas));
             
             //去除时间标签的歌词集合
-            List<string> processedData = new List<string>();
+            List<string> processedData = new List<string>(rawDatas.Length);
 
             foreach (string query in rawDatas)
             {
                 processedData.Add(LyricsTool.GetLineLyric(query));
             }
             string rusalt = LyricsTool.ProcessingLyrics(processedData.ToArray());
+            processedData.Clear();
             string rawJson = GetTransResult(rusalt, from, targetLanguage.ToLower());
             Dictionary<string, string> translation = JsonTools.GetTranslatedMap(rawJson);
-            List<string> rawDataArray = new List<string>(rawDatas);
 
+            List<string> rawDataArray = new List<string>(rawDatas);
             //用翻译好的歌词替换原来的歌词
             foreach (string rawLyrics in translation.Keys)
             {

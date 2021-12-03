@@ -19,9 +19,9 @@ namespace Lyrics
         {
             get; private set; 
         }
-        private LyricsLanguageType language = LyricsLanguageType.Unknown;
+        private UnifiedLanguageCode? _language = null;
 
-        public LyricsFile(string[] lrcFileRawData)
+        public LyricsFile(IEnumerable<string> lrcFileRawData)
         {
             if (lrcFileRawData == null)
                 throw new ArgumentNullException(nameof(lrcFileRawData));
@@ -35,15 +35,7 @@ namespace Lyrics
             }
 
             MusicName = "Music";
-        }
-
-        public LyricsFile(List<string> listData) : this(listData.ToArray())
-        {
-        }
-
-        public LyricsFile(LinkedList<string> linkData) : this(new List<string>(linkData))
-        {
-        }
+        }       
 
         public LyricsFile(FileStream readFileStream)
         {
@@ -109,7 +101,7 @@ namespace Lyrics
             if (saveFolderPath == null)
                 throw new ArgumentNullException(nameof(saveFolderPath));
 
-            using (FileStream fileStream = new FileStream(saveFolderPath + $"\\{MusicName}-{language}.lrc", FileMode.Create))
+            using (FileStream fileStream = new FileStream(saveFolderPath + $"\\{MusicName}-{_language}.lrc", FileMode.Create))
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
@@ -203,7 +195,7 @@ namespace Lyrics
                 throw new ArgumentNullException(nameof(api));
                         
             LyricsFile newLyricsFile = (LyricsFile) ((ICloneable)this).Clone();
-            newLyricsFile.language = LanguageEnumConversion(targetLanguage);
+            newLyricsFile._language = targetLanguage;
 
             string rawLyrscs = GetAllLyrics();
             string correspondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
@@ -219,29 +211,6 @@ namespace Lyrics
                 }
             }
             return newLyricsFile;
-        }
-
-        /// <summary>
-        /// 把<see cref="UnifiedLanguageCode"/>转换为等价的<see cref="LyricsLanguageType"/>
-        /// </summary>
-        /// <param name="unifiedLanguageCode"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        private LyricsLanguageType LanguageEnumConversion(UnifiedLanguageCode unifiedLanguageCode)
-        {
-            switch (unifiedLanguageCode)
-            {
-                case UnifiedLanguageCode.English: return LyricsLanguageType.English;
-                case UnifiedLanguageCode.Chinese: return LyricsLanguageType.Chinese;
-                case UnifiedLanguageCode.Japanese: return LyricsLanguageType.Japanese;
-                case UnifiedLanguageCode.German: return LyricsLanguageType.German;
-                case UnifiedLanguageCode.TraditionalChinese: return LyricsLanguageType.TraditionalChinese;
-                case UnifiedLanguageCode.Russian: return LyricsLanguageType.Russian;
-                case UnifiedLanguageCode.French: return LyricsLanguageType.French;
-                case UnifiedLanguageCode.Spanish: return LyricsLanguageType.Spanish;
-
-                default: throw new ArgumentException(nameof(unifiedLanguageCode));
-            }
         }
 
         /// <summary>
@@ -278,7 +247,7 @@ namespace Lyrics
         /// <summary>
         /// 歌词使用的语言
         /// </summary>
-        public LyricsLanguageType LyricsLanguage => language;
+        public UnifiedLanguageCode? LyricsLanguage => _language;
 
         #region ICollection接口实现
 

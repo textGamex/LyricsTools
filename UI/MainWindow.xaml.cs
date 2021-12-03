@@ -22,7 +22,7 @@ namespace Lyrics
     {       
         private LyricsFile lyricsFile;
         private readonly ITranslation api;
-        private LanguageFlags languageCode;
+        private readonly List<UnifiedLanguageCode> translationToLanguage = new List<UnifiedLanguageCode>(GetEnumSize());
         private StateCode stateCode = StateCode.NONE;
         
         public MainWindow(ITranslation newApi)
@@ -100,12 +100,11 @@ namespace Lyrics
 
             uint totalNumber = GetChoicesNumber();
             double completedNumber = 0;
-            UnifiedLanguageCode[] languages = GetUnifiedLanguageCode(languageCode);
 
-            foreach (var language in languages)
+            foreach (var language in translationToLanguage)
             {
                 var newLyrics = lyricsFile.TranslateTo(api, language);
-                newLyrics.WriteFileTo(SaveFolderPath.SelectedPath);               
+                newLyrics.WriteFileTo(SaveFolderPath.SelectedPath);
 
                 ++completedNumber;
                 System.Diagnostics.Debug.Assert(totalNumber > 0);
@@ -117,45 +116,7 @@ namespace Lyrics
             }
             getLrcPathButton.Visibility = Visibility.Hidden;
         }
-
-        private UnifiedLanguageCode[] GetUnifiedLanguageCode(LanguageFlags language)
-        {
-            var list = new List<UnifiedLanguageCode>(8);
-            if (language.HasFlag(LanguageFlags.EN))
-            {
-                list.Add(UnifiedLanguageCode.English);
-            }
-            if (language.HasFlag(LanguageFlags.ZH))
-            {
-                list.Add(UnifiedLanguageCode.Chinese);
-            }
-            if (language.HasFlag(LanguageFlags.JP))
-            {
-                list.Add(UnifiedLanguageCode.Japanese);
-            }
-            if (language.HasFlag(LanguageFlags.DE))
-            {
-                list.Add(UnifiedLanguageCode.German);
-            }
-            if (language.HasFlag(LanguageFlags.CHT))
-            {
-                list.Add(UnifiedLanguageCode.TraditionalChinese);
-            }
-            if (language.HasFlag(LanguageFlags.SPA))
-            {
-                list.Add(UnifiedLanguageCode.Spanish);
-            }
-            if (language.HasFlag(LanguageFlags.RU))
-            {
-                list.Add(UnifiedLanguageCode.Russian);
-            }
-            if (language.HasFlag(LanguageFlags.FRA))
-            {
-                list.Add(UnifiedLanguageCode.French);
-            }
-            return list.ToArray();
-        }
-
+       
         /// <summary>
         /// 刷新进度条
         /// </summary>
@@ -187,13 +148,8 @@ namespace Lyrics
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            systenMessage.Content = languageCode.ToString();
+            systenMessage.Content = translationToLanguage.ToString();
         }
-        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-        }
-
         #region 获得需要翻译的语言
 
         private void SelectAllSwitch_Checked(object sender, RoutedEventArgs e)
@@ -224,83 +180,83 @@ namespace Lyrics
 
         private void EnglishSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.EN;
+            translationToLanguage.Add(UnifiedLanguageCode.English);
         }
 
         private void EnglishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.EN;
+            translationToLanguage.Remove(UnifiedLanguageCode.English);
         }
 
         private void JapaneseSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.JP;
+            translationToLanguage.Add(UnifiedLanguageCode.Japanese);
         }
 
         private void JapaneseSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.JP;
+            translationToLanguage.Remove(UnifiedLanguageCode.Japanese);
         }
-       
+
         private void ChineseSwich_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.ZH;
+            translationToLanguage.Add(UnifiedLanguageCode.Chinese);
         }
 
         private void ChineseSwich_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.ZH;
+            translationToLanguage.Remove(UnifiedLanguageCode.Chinese);
         }
 
         private void TraditionalChineseSwich_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.CHT;
+            translationToLanguage.Add(UnifiedLanguageCode.TraditionalChinese);
         }
 
         private void TraditionalChineseSwich_UnChecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.CHT;
-        }               
+            translationToLanguage.Remove(UnifiedLanguageCode.TraditionalChinese);
+        }
 
         private void GermanSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.DE;
+            translationToLanguage.Add(UnifiedLanguageCode.German);
         }
 
         private void GermanSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.DE;
+            translationToLanguage.Remove(UnifiedLanguageCode.German);
         }
 
         private void RussianSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.RU;
+            translationToLanguage.Add(UnifiedLanguageCode.Russian);
         }
 
         private void RussianSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.RU;
+            translationToLanguage.Remove(UnifiedLanguageCode.Russian);
         }
 
         private void FrenchSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.FRA;
+            translationToLanguage.Add(UnifiedLanguageCode.French);
         }
 
         private void FrenchSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.FRA;
+            translationToLanguage.Remove(UnifiedLanguageCode.French);
         }
-       
+
 
         private void SpanishSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            languageCode |= LanguageFlags.SPA;
+            translationToLanguage.Add(UnifiedLanguageCode.Spanish);
         }
 
         private void SpanishSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            languageCode &= ~LanguageFlags.SPA;
+            translationToLanguage.Remove(UnifiedLanguageCode.Spanish);
         }
 
         private void CheckedAllLanguageCheck()
@@ -321,17 +277,11 @@ namespace Lyrics
             }
         }
 
-        #endregion
-
+        #endregion    
         
-        private static string GetFileName(string filePath)
+        private static int GetEnumSize()
         {
-            Console.WriteLine(filePath);
-            int index = filePath.LastIndexOf('\\') + 1;
-            Console.WriteLine(index.ToString());
-            string newString = filePath.Substring(index);
-            Console.WriteLine(newString);
-            return newString.Split('.')[0];
-        }        
+            return Enum.GetNames(new UnifiedLanguageCode().GetType()).Length;
+        }
     }
 }
