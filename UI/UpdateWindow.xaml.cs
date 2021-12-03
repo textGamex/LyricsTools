@@ -27,6 +27,8 @@ namespace LyricsTools.UI
         public UpdateWindow(GiteeReleases newGiteeInfo, string json)
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             giteeInfo = newGiteeInfo;
             rawJson = json;
             UpdateContent.Text = giteeInfo.Body;

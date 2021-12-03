@@ -29,7 +29,8 @@ namespace LyricsTools.UI
         {
             InitializeComponent();
             //隐藏面板
-            SetAllItem(Visibility.Hidden);            
+            SetAllItem(Visibility.Hidden);
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void GetLrcPathButton_Click(object sender, RoutedEventArgs e)

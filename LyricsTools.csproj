@@ -104,6 +104,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UtilityLib, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\UtilityLib.1.0.2\lib\netstandard2.0\UtilityLib.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -114,12 +117,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="JsonClass\Gitee.cs" />
-    <Compile Include="Lyrics\Logger\Logger.cs" />
     <Compile Include="Lyrics\LyricsLanguageType.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
     <Compile Include="Lyrics\Translation\Youdao\JsonTools.cs" />
     <Compile Include="Lyrics\Translation\Youdao\YoudaoTranslateApi.cs" />
-    <Compile Include="Music\RequestType.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Lyrics\Translation\Baidu\BaiduTranslateApi.cs" />
     <Compile Include="Lyrics\Translation\LanguageFlags.cs" />
@@ -129,7 +130,6 @@
     <Compile Include="Lyrics\Tools\LyricsTool.cs" />
     <Compile Include="Lyrics\Translation\ITranslation.cs" />
     <Compile Include="Lyrics\Translation\UnifiedLanguageCode.cs" />
-    <Compile Include="Music\Music163Info.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UI\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -212,6 +212,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Music\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -35,6 +35,7 @@ namespace Lyrics
                 
             api = newApi;
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

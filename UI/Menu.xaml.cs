@@ -28,6 +28,7 @@ namespace LyricsTools.UI
         public Menu()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void Translation_Click(object sender, RoutedEventArgs e)

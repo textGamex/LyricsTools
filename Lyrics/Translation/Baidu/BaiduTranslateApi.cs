@@ -7,19 +7,20 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using static LyricsTools.Tools.Debug;
+using UtilityLib;
 
 namespace Lyrics.Translation.Baidu
 { 
     public partial class BaiduTranslationApi : ITranslation
     {
-        private readonly string appId;
-        private readonly string secretKey;
-        private static readonly Random random = new Random();
+        private readonly string _appId;
+        private readonly string _secretKey;
+        private static readonly Random _random = new Random();
 
         public BaiduTranslationApi(string newAppId, string newSecretKey)
         {
-            appId = newAppId.Trim() ?? throw new ArgumentNullException(nameof(newAppId));
-            secretKey = newSecretKey.Trim() ?? throw new ArgumentNullException(nameof(newSecretKey));
+            _appId = newAppId.Trim() ?? throw new ArgumentNullException(nameof(newAppId));
+            _secretKey = newSecretKey.Trim() ?? throw new ArgumentNullException(nameof(newSecretKey));
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace Lyrics.Translation.Baidu
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
             
-            string randomNumber = random.Next().ToString();
+            string randomNumber = _random.Next().ToString();
             string sign = GetSign(query, randomNumber);
             string url = GetUrl(query, from.ToLower(), to.ToLower(), randomNumber, sign);
             return TranslateText(url);
@@ -139,21 +140,25 @@ namespace Lyrics.Translation.Baidu
         {
             StringBuilder sb = new StringBuilder();
 
-            _ = sb.Append(appId).Append(query).Append(randomNumber).Append(secretKey);
+            _ = sb.Append(_appId).Append(query).Append(randomNumber).Append(_secretKey);
             return EncryptString(sb.ToString());
         }
 
         private string GetUrl(string query, string from, string to, string randomNumber, string sign)
         {
-            StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate");
-            url.Append("?q=").Append(HttpUtility.UrlEncode(query));
-            url.Append("&from=").Append(from);
-            url.Append("&to=").Append(to);
-            url.Append("&appid=").Append(appId);
-            url.Append("&salt=").Append(randomNumber);
-            url.Append("&sign=").Append(sign);
+            //StringBuilder url = new StringBuilder("http://api.fanyi.baidu.com/api/trans/vip/translate");
+            const string url = "http://api.fanyi.baidu.com/api/trans/vip/translate";
+            var map = new Dictionary<string, string>()
+            {
+                ["q"] = HttpUtility.UrlEncode(query),
+                ["from"] = from,
+                ["to"] = to,
+                ["appid"] = _appId,
+                ["salt"] = randomNumber,
+                ["sign"] = sign,
+            };
 
-            return url.ToString();
+            return url.GetCompleteUrl(map);
         }
 
         private string TranslateText(string url)

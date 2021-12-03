@@ -75,7 +75,7 @@ namespace Lyrics
                 throw new FormatException();
             if (!line.Contains(":"))
                 throw new FormatException("找不到 ':' ");            
-            if (line.Contains("."))
+            if (!line.Contains("."))
                 throw new FormatException("找不到 '.' ");
             
             //去除歌词和[]

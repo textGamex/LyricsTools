@@ -29,6 +29,7 @@ namespace LyricsTools.UI
         public Login()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             if (Properties.Settings.Default.IsAutoFill)
             {
                 AutoFillMessageCheckBox.IsChecked = true;
