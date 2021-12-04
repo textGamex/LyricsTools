@@ -41,11 +41,10 @@ namespace LyricsTools.UI
             };
             if (dialog.ShowDialog() == true)
             {
-                using (FileStream stream = new FileStream(dialog.FileName, FileMode.Open))
-                {
-                    lyricsFile = new LyricsFile(stream);
-                    cloneLyricsFile = (LyricsFile) ((ICloneable)lyricsFile).Clone();
-                }
+
+                lyricsFile = new LyricsFile(dialog.FileName);
+                cloneLyricsFile = (LyricsFile) ((ICloneable)lyricsFile).Clone();
+                
                 GetLrcPathButton.Visibility = Visibility.Collapsed;
                 FunctionSelection.Visibility = Visibility.Visible;
 

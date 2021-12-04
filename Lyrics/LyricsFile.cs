@@ -13,11 +13,21 @@ namespace Lyrics
     /// </summary>
     public partial class LyricsFile : ICollection<(TimeTag, string)>, ICloneable
     {
-        private readonly LinkedList<(TimeTag timeTag, string lyrics)> data =
+        /// <summary>
+        /// 结束标志
+        /// </summary>
+        public const string END_FLAG = "-----END-----";
+        protected readonly LinkedList<(TimeTag timeTag, string lyrics)> _data =
             new LinkedList<(TimeTag timeTag, string lyrics)>();
         private UnifiedLanguageCode? _contentLanguage = null;
         public string MusicName{ get; private set; }
+        public int Count => _data.Count;
 
+        /// <summary>
+        /// 集合中每个元素为LRC文件中的一行
+        /// </summary>
+        /// <param name="lrcFileRawData"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public LyricsFile(IEnumerable<string> lrcFileRawData)
         {
             if (lrcFileRawData == null)
@@ -28,26 +38,11 @@ namespace Lyrics
             {
                 var result = GetTimeTagAndLyrics(item);
                 list.Add(result.lyrics);
-                data.AddLast(result);
+                _data.AddLast(result);
             }
 
             MusicName = "Music";
-        }       
-
-        public LyricsFile(FileStream readFileStream)
-        {
-            if (readFileStream == null)
-                throw new ArgumentNullException(nameof(readFileStream));
-
-            using (StreamReader streamReader = new StreamReader(readFileStream))
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
-                }
-            }
-            MusicName = GetFileName(readFileStream.Name);
-        }
+        }             
 
         public LyricsFile(string filePath)
         {
@@ -60,7 +55,7 @@ namespace Lyrics
                 {
                     while (!streamReader.EndOfStream)
                     {
-                        data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
+                        _data.AddLast(GetTimeTagAndLyrics(streamReader.ReadLine()));
                     }
                 }
             }
@@ -86,6 +81,37 @@ namespace Lyrics
         }
 
         /// <summary>
+        /// 翻译到指定语种
+        /// </summary>
+        /// <param name="api">翻译API</param>
+        /// <param name="targetLanguage">翻译到的语言</param>
+        /// <returns>一个新的<see cref="LyricsFile"/>对象</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public LyricsFile TranslateTo(ITranslation api, UnifiedLanguageCode targetLanguage)
+        {
+            if (api == null)
+                throw new ArgumentNullException(nameof(api));
+
+            LyricsFile newLyricsFile = (LyricsFile)((ICloneable)this).Clone();
+            newLyricsFile._contentLanguage = targetLanguage;
+
+            string rawLyrscs = GetAllLyrics();
+            string correspondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
+            var translation = api.GetTransResultAndRawDataMap(rawLyrscs, "auto", correspondingLanguageCode);
+            foreach (string rawLyrics in translation.Keys)
+            {
+                for (var node = newLyricsFile._data.First; node != null; node = node.Next)
+                {
+                    if (node.Value.lyrics == rawLyrics)
+                    {
+                        node.Value = (node.Value.timeTag, translation[rawLyrics]);
+                    }
+                }
+            }
+            return newLyricsFile;
+        }
+
+        /// <summary>
         /// 把对象写入到<c>saveFolderPath</c>
         /// </summary>
         /// <param name="saveFolderPath">写入路径</param>
@@ -108,7 +134,7 @@ namespace Lyrics
             {
                 using (StreamWriter file = new StreamWriter(fileStream))
                 {
-                    foreach (var (timeTag, lyrics) in data)
+                    foreach (var (timeTag, lyrics) in _data)
                     {
                         file.WriteLine($"{timeTag.ToTimeTag()}{lyrics}");
                     }
@@ -122,20 +148,20 @@ namespace Lyrics
         /// <param name="removeTimeTag">移除此时间标签前的所有时间标签</param>
         public void RemoveBefore(in TimeTag removeTimeTag)
         {
-            for (var node = data.First; node != null; node = node.Next)
+            for (var node = _data.First; node != null; node = node.Next)
             {
                 if (node.Value.timeTag > removeTimeTag)
                 {
                     node = node.Previous;
-                    data.AddAfter(node, (removeTimeTag, node.Value.lyrics));
+                    _data.AddAfter(node, (removeTimeTag, node.Value.lyrics));
                     //删除node及所有node前的数据
                     for (LinkedListNode<(TimeTag timeTag, string lyrics)> previous; node != null; node = previous)
                     {
                         previous = node.Previous;
-                        data.Remove(node);
+                        _data.Remove(node);
                     }
                     //前移时间标签
-                    for (var needRemoveNode = data.First; needRemoveNode != null; needRemoveNode = needRemoveNode.Next)
+                    for (var needRemoveNode = _data.First; needRemoveNode != null; needRemoveNode = needRemoveNode.Next)
                     {
                         needRemoveNode.Value = (needRemoveNode.Value.timeTag - removeTimeTag, needRemoveNode.Value.lyrics);
                     }
@@ -151,17 +177,17 @@ namespace Lyrics
         /// <param name="removeTimeTag">时间标签</param>
         public void RemoveAfter(in TimeTag removeTimeTag)
         {
-            for (var node = data.First; node != null; node = node.Next)
+            for (var node = _data.First; node != null; node = node.Next)
             {
                 if (node.Value.timeTag > removeTimeTag || node.Value.timeTag == removeTimeTag)
                 {
-                    data.AddBefore(node, (removeTimeTag, "---END---"));
+                    _data.AddBefore(node, (removeTimeTag, "---END---"));
                     //删除node及所有node前的数据
                     for (LinkedListNode<(TimeTag timeTag, string lyrics)> next; node != null; node = next)
                     {
                         //Console.WriteLine("移除" + node.Value);
                         next = node.Next;
-                        data.Remove(node);
+                        _data.Remove(node);
                     }
                     break;
                 }
@@ -173,7 +199,7 @@ namespace Lyrics
         /// </summary>
         /// <param name="statr">开始</param>
         /// <param name="end">结束</param>
-        /// <exception cref="ArgumentException">statr 大于 end</exception>
+        /// <exception cref="ArgumentException">如果statr 大于 end</exception>
         public void InterceptTime(in TimeTag statr, in TimeTag end)
         {
             if (statr < end)
@@ -184,36 +210,7 @@ namespace Lyrics
             RemoveAfter(end);
         }
 
-        /// <summary>
-        /// 翻译到指定语种
-        /// </summary>
-        /// <param name="api">翻译API</param>
-        /// <param name="targetLanguage">翻译到的语言</param>
-        /// <returns>一个新的<see cref="LyricsFile"/>对象</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public LyricsFile TranslateTo(ITranslation api, UnifiedLanguageCode targetLanguage)
-        {
-            if (api == null)
-                throw new ArgumentNullException(nameof(api));
-                        
-            LyricsFile newLyricsFile = (LyricsFile) ((ICloneable)this).Clone();
-            newLyricsFile._contentLanguage = targetLanguage;
 
-            string rawLyrscs = GetAllLyrics();
-            string correspondingLanguageCode = api.GetStandardTranslationLanguageParameters(targetLanguage);
-            var translation = api.GetTransResultAndRawDataMap(rawLyrscs, "auto", correspondingLanguageCode);
-            foreach (string rawLyrics in translation.Keys)
-            {
-                for (var node = newLyricsFile.data.First; node != null; node = node.Next)
-                {
-                    if (node.Value.lyrics == rawLyrics)
-                    {
-                        node.Value = (node.Value.timeTag, translation[rawLyrics]);
-                    }
-                }
-            }
-            return newLyricsFile;
-        }
 
         /// <summary>
         /// 得到data里的所有lyrics
@@ -222,12 +219,22 @@ namespace Lyrics
         private string GetAllLyrics()
         {
             List<string> lyrics = new List<string>();
-            foreach (var item in data)
+            foreach (var item in _data)
             {
                 lyrics.Add(item.lyrics);
             }
             return LyricsTool.ProcessingLyrics(lyrics);
         }
+
+        //protected Dictionary<TimeTag, string> GetData()
+        //{
+        //    var map = new Dictionary<TimeTag, string>(data.Count);
+        //    foreach (var (timeTag, lyrics) in data)
+        //    {
+        //        map[timeTag] = lyrics;
+        //    }
+        //    return map;
+        //}
 
         /// <summary>
         /// 得到标准格式的LRC文件内容数组, 每个元素对应文件中的一行
@@ -237,14 +244,14 @@ namespace Lyrics
         {
             List<string> list = new List<string>();
 
-            foreach (var (timeTag, lyrics) in data)
+            foreach (var (timeTag, lyrics) in _data)
             {
                 list.Add(string.Format($"{timeTag.ToTimeTag()}{lyrics}"));
             }
             return list.ToArray();
         }
 
-        public int Count => data.Count;
+        
 
         /// <summary>
         /// 歌词使用的语言
@@ -255,7 +262,7 @@ namespace Lyrics
 
         public IEnumerator<(TimeTag, string)> GetEnumerator()
         {
-            return data.GetEnumerator();
+            return _data.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -265,46 +272,51 @@ namespace Lyrics
         
         public void Clear()
         {
-            data.Clear();
+            _data.Clear();
         }
 
         public bool Contains((TimeTag, string) item)
         {
-            return data.Contains(item);
+            return _data.Contains(item);
         }
 
         public bool Remove((TimeTag, string) item)
         {
-            return data.Remove(item);
+            return _data.Remove(item);
         }
 
         bool ICollection<(TimeTag, string)>.IsReadOnly => false;
 
         void ICollection<(TimeTag, string)>.Add((TimeTag, string) item)
         {
-            data.AddLast(item);
+            _data.AddLast(item);
         }
 
         void ICollection<(TimeTag, string)>.CopyTo((TimeTag, string)[] array, int arrayIndex)
         {
-            data.CopyTo(array, arrayIndex);
+            _data.CopyTo(array, arrayIndex);
         }
         #endregion
 
         object ICloneable.Clone()
         {
-            (TimeTag, string)[] array = new (TimeTag, string)[data.Count];
-            data.CopyTo(array, 0);
+            (TimeTag, string)[] array = new (TimeTag, string)[_data.Count];
+            _data.CopyTo(array, 0);
             var clone = new LyricsFile(array);
             clone.MusicName = this.MusicName;
             return clone;
         }
 
+        //public virtual LyricsFile Clone()
+        //{
+
+        //}
+
         private LyricsFile((TimeTag, string)[] datas)
         {
             foreach (var itme in datas)
             {
-                data.AddLast(itme);
+                _data.AddLast(itme);
             }
         }
     }

@@ -131,6 +131,20 @@ namespace Lyrics
         }
 
         /// <summary>
+        /// 得到Bili字幕格式的时间标签
+        /// </summary>
+        /// <returns></returns>
+        public double GetBiliFormatTimeTag()
+        {
+            double num = 0;
+            if (_millisecond != 0)
+            {
+                num = (double)_millisecond / 1000;
+            }
+            return _minute*60 + _second + Math.Round(num, 3);
+        }
+
+        /// <summary>
         /// 返回基于this加上毫秒的副本
         /// </summary>
         /// <param name="addMillisecond">增加的毫秒</param>

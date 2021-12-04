@@ -124,6 +124,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="JsonClass\Gitee.cs" />
+    <Compile Include="Lyrics\Bili\BiliLyrics.cs" />
+    <Compile Include="Lyrics\Bili\Credential.cs" />
+    <Compile Include="Lyrics\Bili\SubtitleBase.cs" />
     <Compile Include="Lyrics\LyricsFile.cs" />
     <Compile Include="Lyrics\Translation\Youdao\JsonTools.cs" />
     <Compile Include="Lyrics\Translation\Youdao\YoudaoTranslateApi.cs" />

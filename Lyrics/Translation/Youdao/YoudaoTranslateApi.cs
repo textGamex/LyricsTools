@@ -92,7 +92,6 @@ namespace Lyrics.Translation.Youdao
 
         private string GetReturnResult(Dictionary<string, string> dic)
         {
-
             StringBuilder builder = new StringBuilder("https://openapi.youdao.com/api").Append("/?");
             builder.Append("from=").Append(dic["from"]).Append("&");
             builder.Append("to=").Append(dic["to"]).Append("&");
